@@ -2,7 +2,7 @@ const connection = require('../connections/connect');
 const { DataTypes } = require('sequelize');
 const StoreInformationModel = require('./StoreInformationModel');
 
-const StoreSettingModel = connection.define('storeSetting', {
+const StoreSettingModel = connection.define('StoreSetting', {
     settingId: {
         type: DataTypes.INTEGER,
         allowNull: false,
