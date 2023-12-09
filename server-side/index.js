@@ -27,6 +27,8 @@ app.get('/', (req, res) => {
   </div>`);
 });
 
+const packageController = require('./controllers/packageController');
+app.use(packageController);
 app.listen(port, () => {
   console.log(`POSYAYEE-V2 app listening on port ${port}`)
 });
