@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiMenuLine } from "react-icons/ri";
 import {
   IoPricetagOutline,
@@ -11,11 +11,31 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   const [navShow, setNavShow] = useState(false);
+  const [scroll, setScroll] = useState(false);
 
   // Toggle navigation menu visibility
   const toggleNav = () => {
     setNavShow(!navShow);
   };
+
+  // Add scroll event listener to update scroll state
+  useEffect(() => {
+    // Function to handle scroll events
+    const handleScroll = () => {
+      // Get the vertical scroll position
+      const scrollY = window.scrollY;
+      // Update the scroll state based on scroll position
+      setScroll(scrollY > 0);
+    };
+    // Add event listener when the component mounts
+    window.addEventListener("scroll", handleScroll);
+
+    // Remove event listener when the component unmounts to prevent memory leaks
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   // Determine active button based on the current route
   const getActiveButton = (route) => {
     return location.pathname === route ? "text-[#4C49ED]" : "";
