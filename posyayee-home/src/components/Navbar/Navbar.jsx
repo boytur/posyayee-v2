@@ -1,40 +1,27 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RiMenuLine } from "react-icons/ri";
 import {
   IoPricetagOutline,
   IoHomeOutline,
   IoDocumentsOutline,
 } from "react-icons/io5";
+import { FcPhone } from "react-icons/fc";
 import { MdOutlineRateReview } from "react-icons/md";
-import { IoMdContacts } from "react-icons/io";
 import { Link } from "react-router-dom";
 
 function Navbar() {
   const [navShow, setNavShow] = useState(false);
-  const [scroll, setScroll] = useState(false);
 
+  // Toggle navigation menu visibility
   const toggleNav = () => {
     setNavShow(!navShow);
   };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setScroll(scrollY > 0);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
+  // Determine active button based on the current route
   const getActiveButton = (route) => {
     return location.pathname === route ? "text-[#4C49ED]" : "";
   };
   return (
-    <div className="w-full h-14 flex justify-center">
+    <div className="w-full h-14 flex justify-center z-50 relative">
       <div
         className={`w-full justify-center flex bg-white h-16 fixed ${
           scroll ? "shadow-lg" : " "
@@ -100,15 +87,33 @@ function Navbar() {
                   <p>แจ้งปัญหา/รีวิว</p>
                 </div>
               </Link>
-              <Link
-                to="/contact"
-                className={`cursor-pointer ${getActiveButton("/contact")}`}
-              >
-                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 h-14">
-                  <IoMdContacts />
-                  <p>ติดต่อเรา</p>
+              <div className="cursor-pointer flex items-center gap-4 py-3 pb-8 px-5 lg:py-0">
+                <a
+                  href="https://www.facebook.com/profile.php?id=61552548386040"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    className="w-[25px] hover:scale-110"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png"
+                    alt=""
+                  />
+                </a>
+                <div>
+                  <a href="mailto:piyawat.posyayee@gmail.com">
+                    <img
+                      className="w-[25px] hover:scale-110"
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/2560px-Gmail_icon_%282020%29.svg.png"
+                      alt=""
+                    />
+                  </a>
                 </div>
-              </Link>
+                <div>
+                  <a href="tel:+66955102451">
+                    <FcPhone size={27} className="w-[25px] hover:scale-110" />
+                  </a>
+                </div>
+              </div>
               <li className="lg:flex">
                 <li className="pb-5 lg:pb-0">
                   <div className="flex items-center gap-4 lg:text-[.8rem] px-2 h-9 lg:h-14">
