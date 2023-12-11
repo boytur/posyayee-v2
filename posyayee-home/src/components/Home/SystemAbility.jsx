@@ -51,7 +51,7 @@ function SystemAbility() {
           <div className="w-full z-30 lg:mt-12 text-white h-full lg:flex justify-center">
             <div className=" w-full justify-center flex">
               <div className="w-full justify-center mt-32 lg:mt-0 lg:pt-10">
-                <h1 className=" font-semibold text-[38px]">
+                <h1 className=" font-semibold md:text-[38px] text-[30px]">
                   ความสามารถของระบบ
                 </h1>
                 <div className=" lg:flex lg:flex-row flex-col gap-6 mt-6 justify-center w-full px-2 lg:px-0">
