@@ -1,23 +1,46 @@
+import { motion } from "framer-motion";
+
+// Framer Motion variants for animation
+const container = {
+  hidden: { opacity: 1, scale: 0 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delayChildren: 0.9,
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+// Set document title
+document.title = "POSYAYEE 🛒 หน้าหลัก";
 function Hero() {
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full h-[35rem] lg:flex  mt-6 max-w-screen-xl">
-        <div className="lg:h-full h-[35%] md:h-[80%] md:mt-8 w-full flex lg:p-7 order-1 justify-center">
+      <div className="w-full md:h-[35rem] lg:flex  mt-6 max-w-screen-xl">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={container}
+          className="lg:h-[90%] h-[40%] md:px-4 px-2 md:h-[80%] md:mt-0 w-full flex lg:p-2 order-1 justify-center"
+        >
           <video
             className="object-contain"
             autoPlay
             muted
             playsInline
-            alt="วิดีโอสาธิตการใช้งานโพสยาหยี"
+            title="วิดีโอสาธิตการใช้งานโพสยาหยี"
           >
-            <source
-              src="https://placehold.co/1920x1080.mp4"
-              type="video/mp4"
-              alt
-            />
+            <source src="https://placehold.co/1920x1080.mp4" type="video/mp4" />
           </video>
-        </div>
-        <div className="h-full w-full lg:mt-16 md:mt-8 mt-5">
+        </motion.div>
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={container}
+          className="h-full w-full lg:mt-3 md:mt-8 mt-5"
+        >
           <div className="lg:text-[4rem] text-[2.6rem] text-center lg:text-left font-semibold  lg:mt-9 md:text-[4rem]">
             <h1>
               “ใช้งานง่าย <br />
@@ -45,7 +68,7 @@ function Hero() {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
