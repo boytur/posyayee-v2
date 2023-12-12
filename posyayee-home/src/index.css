@@ -5,11 +5,14 @@
 
 #root {
   background-image: url('./assets/bg-home.webp');
-  height: 200vh;
+  height: 120vh;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
 }
 * {
   font-family: 'Sarabun', sans-serif;
+}
+html {
+  scroll-behavior: smooth;
 }
