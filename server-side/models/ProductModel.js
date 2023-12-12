@@ -17,9 +17,13 @@ const ProductModel = connection.define('Product', {
         type: DataTypes.STRING(225),
         allowNull: false,
     },
-    productPrice: {
+    productSalePrice: {
         type: DataTypes.FLOAT,
         allowNull: false,
+    },
+    productCostPrice:{
+        type: DataTypes.FLOAT,
+        allowNull:false
     },
     productQuantity: {
         type: DataTypes.INTEGER,
