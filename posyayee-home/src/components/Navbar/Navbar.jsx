@@ -43,7 +43,7 @@ function Navbar() {
   return (
     <div className="w-full h-14 flex justify-center z-50 relative">
       <div
-        className={`w-full justify-center flex bg-white h-16 fixed ${
+        className={`w-full justify-center flex bg-white h-16 fixed  ${
           scroll ? "shadow-lg" : " "
         }`}
       >
@@ -67,7 +67,7 @@ function Navbar() {
             </div>
           </div>
           <div
-            className={`lg:flex  w-full justify-start bg-white lg:justify-end ${
+            className={`lg:flex  w-full justify-start bg-white lg:justify-end  ${
               navShow ? "flex" : "hidden"
             }`}
           >
@@ -88,23 +88,23 @@ function Navbar() {
                 </div>
               </Link>
               <Link
-                to="/documentation"
+                to="/docs"
                 className={`cursor-pointer ${getActiveButton(
-                  "/documentation"
+                  "/docs"
                 )}`}
               >
-                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 h-14">
+                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 md:pl-0 h-14">
                   <IoDocumentsOutline />
                   <p>คู่มือการใช้งาน</p>
                 </div>
               </Link>
               <Link
-                to="/reviews"
-                className={`cursor-pointer ${getActiveButton("/reviews")}`}
+                to="/news"
+                className={`cursor-pointer ${getActiveButton("/news")}`}
               >
-                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 h-14">
+                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 md:pl-0 h-14">
                   <MdOutlineRateReview className="pt-[2px]" />
-                  <p>แจ้งปัญหา/รีวิว</p>
+                  <p>ข่าวสาร</p>
                 </div>
               </Link>
               <div className="cursor-pointer flex items-center gap-4 py-3 pb-8 px-5 lg:py-0">
