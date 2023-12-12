@@ -14,6 +14,11 @@ const StoreSettingModel = connection.define('StoreSetting', {
         allowNull: null,
         defaultValue: 5
     },
+    soundOnSale:{
+        type: DataTypes.BOOLEAN,
+        allowNull:null,
+        defaultValue:true
+    }
 });
 StoreSettingModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' });
 StoreSettingModel.sync({ alter: true });
