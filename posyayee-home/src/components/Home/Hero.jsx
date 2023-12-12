@@ -63,7 +63,12 @@ function Hero() {
               <button className="mt-4 hover:bg-[#4c49eddb] lg:w-[250px] h-[55px] border rounded-[115.385px;] bg-[#4C49ED] text-white shadow-md">
                 <p>ทดลองใช้งานฟรี 30 วัน</p>
               </button>
-              <button className="mt-4 lg:w-[250px] h-[55px] border rounded-[115.385px;] text-[#4C49ED] shadow-md hover:bg-[#dbdbdb69]">
+              <button
+                className="mt-4 lg:w-[250px] h-[55px] rounded-[115.385px;] text-[#4C49ED] shadow-md hover:bg-[#dbdbdb69]"
+                style={{
+                  border: "1px solid black",
+                }}
+              >
                 <p>สอบถามข้อมูลเพิ่มเติม</p>
               </button>
             </div>
