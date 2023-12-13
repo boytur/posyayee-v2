@@ -48,11 +48,6 @@ const StoreInformationModel = connection.define('StoreInformation', {
         allowNull: false,
         defaultValue: 31
     },
-    storeActiveStatus:{
-        type: DataTypes.BOOLEAN,
-        allowNull:false,
-        defaultValue:true
-    }
 });
 StoreInformationModel.belongsTo(PackageModel, { foreignKey: 'Package_packageId' });
 StoreInformationModel.sync({ alter: true });
