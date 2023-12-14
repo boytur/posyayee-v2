@@ -28,7 +28,10 @@ app.get('/', (req, res) => {
 });
 
 const packageController = require('./controllers/packageController');
+const StoreInformationController = require('./controllers/StoreInformationController');
 app.use(packageController);
+app.use(StoreInformationController)
+
 app.listen(port, () => {
   console.log(`POSYAYEE-V2 app listening on port ${port}`)
 });
