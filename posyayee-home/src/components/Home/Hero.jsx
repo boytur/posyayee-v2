@@ -17,7 +17,7 @@ const container = {
 document.title = "POSYAYEE 🛒 หน้าหลัก";
 function Hero() {
   return (
-    <div className="w-full flex justify-center">
+    <div id="home" className="w-full flex justify-center">
       <div className="w-full md:h-[35rem] lg:flex  mt-6 max-w-screen-xl">
         <motion.div
           initial="hidden"

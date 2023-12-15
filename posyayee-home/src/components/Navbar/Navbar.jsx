@@ -79,21 +79,19 @@ function Navbar() {
                 </div>
               </Link>
               <Link
-                to="/price"
-                className={`cursor-pointer ${getActiveButton("/price")}`}
+                to="/pricing"
+                className={`cursor-pointer ${getActiveButton("/pricing")}`}
               >
-                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 lg:pl-0 h-14">
+                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 lg:pl-0  h-14">
                   <IoPricetagOutline className="" />
                   <p>ราคา</p>
                 </div>
               </Link>
               <Link
                 to="/docs"
-                className={`cursor-pointer ${getActiveButton(
-                  "/docs"
-                )}`}
+                className={`cursor-pointer ${getActiveButton("/docs")}`}
               >
-                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 md:pl-0 h-14">
+                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 md:pl-6 lg:pl-0 h-14">
                   <IoDocumentsOutline />
                   <p>คู่มือการใช้งาน</p>
                 </div>
@@ -102,7 +100,7 @@ function Navbar() {
                 to="/news"
                 className={`cursor-pointer ${getActiveButton("/news")}`}
               >
-                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 md:pl-0 h-14">
+                <div className="flex items-center gap-2 lg:text-[.8rem] pl-6 md:pl-6 lg:pl-0 h-14">
                   <MdOutlineRateReview className="pt-[2px]" />
                   <p>ข่าวสาร</p>
                 </div>

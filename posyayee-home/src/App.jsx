@@ -1,9 +1,8 @@
 import Documentation from "./components/Documentation/Documentation";
 import Home from "./components/Home/Home";
-import Price from "./components/Price/Price";
-import Contact from "./components/Contact/Contact";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Review from "./components/Review/Review";
+import News from "./components/News/News";
+import Pricing from "./components/Pricing/Pricing";
 
 function App() {
   return (
@@ -11,10 +10,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/price" element={<Price />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/docs" element={<Documentation />} />
-          <Route path="/news" element={<Review />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/news" element={<News />} />
         </Routes>
       </BrowserRouter>
     </>
