@@ -27,9 +27,9 @@ app.get('/', (req, res) => {
   </div>`);
 });
 
-const packageController = require('./controllers/packageController');
-const StoreInformationController = require('./controllers/StoreInformationController');
-app.use(packageController);
+const PackageController = require('./controllers/packageController');
+const StoreInformationController = require('./controllers/storeInformationController');
+app.use(PackageController);
 app.use(StoreInformationController)
 
 app.listen(port, () => {
