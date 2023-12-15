@@ -17,6 +17,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+//ทำให้ folder เป็น public
+app.use(express.static('public'));
+
 //default routes
 app.get('/', (req, res) => {
   res.status(200).send(`    
@@ -28,9 +31,9 @@ app.get('/', (req, res) => {
 });
 
 const PackageController = require('./controllers/packageController');
-const StoreInformationController = require('./controllers/storeInformationController');
+const StoreInformationController = require('./controllers/storeInformationControllers');
 app.use(PackageController);
-app.use(StoreInformationController)
+app.use(StoreInformationController);
 
 app.listen(port, () => {
   console.log(`POSYAYEE-V2 app listening on port ${port}`)
