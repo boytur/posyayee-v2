@@ -13,7 +13,7 @@ function Footer() {
             <br />
             <div className="flex flex-col gap-2 font-thin">
               <Link to="/">หน้าหลัก</Link>
-              <Link to="/price">ราคา</Link>
+              <Link to="/pricing">ราคา</Link>
               <Link to="/docs">คู่มือการใช้งาน</Link>
               <Link to="/news">ข่าวสาร</Link>
             </div>
