@@ -40,7 +40,7 @@ function Aside() {
             />
           </div>
           <Link
-            to="/sale-product"
+            to="/"
             className={`text-[2rem] font-bold cursor-pointer ${
               aside ? "hidden" : ""
             }`}
@@ -55,8 +55,8 @@ function Aside() {
         <button
           className={`w-full h-[3rem] flex items-center gap-2 justify-left rounded-md cursor-pointer ${
             aside ? "justify-center" : "pl-7"
-          } ${getActiveButton("/sale-product")}`}
-          onClick={() => handleNavigate("/sale-product")}
+          } ${getActiveButton("/")}`}
+          onClick={() => handleNavigate("/")}
         >
           <div>
             <CiShop size={20} />
