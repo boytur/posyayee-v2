@@ -30,13 +30,13 @@ function Navbar() {
             <div className="pl-3">
               <FaBars
                 onClick={() => setNavMobile(!navMobile)}
-                className=" hover:scale-105"
+                className=" hover:scale-105 cursor-pointer"
                 color="#4C49ED"
                 size={30}
               />
               {/* Popover whe click fabar*/}
               {navMobile && (
-                <div className="border absolute mt-3 w-[15rem] h-[18rem] bg-white shadow-xl rounded-md">
+                <div className="border absolute mt-3 w-[15rem] h-[18rem] bg-white shadow-xl rounded-md z-50">
                   <div className="flex flex-col p-2 gap-1">
                     {/* Sale product */}
                     <button
