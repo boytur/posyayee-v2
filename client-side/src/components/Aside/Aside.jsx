@@ -55,8 +55,8 @@ function Aside() {
         <button
           className={`w-full h-[3rem] flex items-center gap-2 justify-left rounded-md cursor-pointer ${
             aside ? "justify-center" : "pl-7"
-          } ${getActiveButton("/sale-product")}`}
-          onClick={() => handleNavigate("/sale-product")}
+          } ${getActiveButton("/")}`}
+          onClick={() => handleNavigate("/")}
         >
           <div>
             <CiShop size={20} />
