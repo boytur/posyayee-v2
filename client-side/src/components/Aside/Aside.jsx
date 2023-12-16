@@ -32,8 +32,9 @@ function Aside() {
       <div className="flex justify-center">
         {/* Hambergerbar width logo desktop*/}
         <div className="flex items-center gap-1 w-full justify-center h-[3rem]">
-          <div className="pt-[5px] cursor-pointer hover:scale-105">
+          <div className="cursor-pointer hover:scale-105 flex items-center">
             <FaBars
+              className="mt-1"
               color="#4C49ED"
               onClick={() => setAside(!aside)}
               size={26}
