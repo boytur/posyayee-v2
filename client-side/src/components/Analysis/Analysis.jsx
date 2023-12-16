@@ -4,7 +4,7 @@ import Navbar from "../Navbar/Navbar"
 function Analysis() {
   return (
     <div className=" w-full h-[100vh]">
-    <div className="w-full bg-blue-500 absolute">
+    <div className="w-full absolute">
       <Navbar />
     </div>
     <div className="flex">

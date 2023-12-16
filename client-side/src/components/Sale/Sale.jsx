@@ -4,7 +4,7 @@ import Navbar from "../Navbar/Navbar";
 function Sale() {
   return (
     <div className=" w-full h-[100vh]">
-      <div className="w-full absolute bg-blue-500">
+      <div className="w-full absolute">
         <Navbar />
       </div>
       <div className="flex">
