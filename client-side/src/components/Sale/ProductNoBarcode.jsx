@@ -33,7 +33,7 @@ function ProductNoBarcode() {
                 <div className="md:w-[140px] w-full border md:block items-center flex md:h-[185px] h-[70px] bg-white rounded-lg hover:border-2 hover:border-[#4C49ED] cursor-pointer">
                   <div className="p-1 w-[5rem] md:w-full">
                     <img
-                      className="object-cover md:w-full md:h-[100px] h-[50px] w-full rounded-sm pl-1"
+                      className="object-cover md:w-full md:h-[100px] h-[50px] w-full rounded-sm pl-1 md:pl-0"
                       src={product.productImagePath}
                       alt=""
                     />
