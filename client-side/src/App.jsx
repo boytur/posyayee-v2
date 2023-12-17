@@ -4,6 +4,7 @@ import Stock from "./components/Stock/Stock";
 import AddStock from "./components/AddStock/AddStock";
 import Analysis from "./components/Analysis/Analysis";
 import History from "./components/History/History";
+import Login from "./components/Login/Login";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/add-product" element={<AddStock />} />
         <Route path="/analysis" element={<Analysis />} />
         <Route path="/history" element={<History />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
