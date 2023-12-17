@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken');
 
 //multer for uploading files
 const multer = require('multer');
+const PackageModel = require('../models/PackageModel');
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, 'public/img-avatar');
@@ -91,57 +92,78 @@ app.post('/api/store/signup-employee', upload.single('photo'), async (req, res) 
 app.post('/api/store/login-store', async (req, res) => {
     const { storeOwnEmail, storeOwnPassword } = req.body;
     try {
+        //Validate data
+        switch (true) {
+            case !storeOwnEmail || !storeOwnPassword:
+                return res.status(400).send({
+                    success: false,
+                    msg: "กรุณากรอกข้อมูลให้ครบถ้วนค่ะ!"
+                });
+        }
+        //find user email
         const findUserStoreWithEmail = await StoreInformationModel.findAll({
             where: {
                 storeOwnEmail: storeOwnEmail
             }
         });
+        //if found email
         if (findUserStoreWithEmail.length != 0) {
             //collect password and compare 
             const hashedPassword = (findUserStoreWithEmail[0].storeOwnPassword);
             const passwordMatch = await bcrypt.compare(storeOwnPassword, hashedPassword);
 
+            //if password not match
             if (!passwordMatch) {
                 return res.status(401).send({
                     success: false,
                     msg: 'รหัสผ่านไม่ถูกต้องค่ะ!'
-                })
+                });
             }
+            //if password match
             else {
+
+                //send jwt to user
                 const userToken = jwt.sign({ storeId: findUserStoreWithEmail[0].storeId },
                     process.env.JWT_SECRET,
                     { expiresIn: '30d' });
-
-                const findUSerStore = await UserStoreModel.findAll({
+                
+                //find user in store by storeId
+                const findUserStore = await UserStoreModel.findAll({
                     where: {
-                        StoreInformation_storeId: findUserStoreWithEmail[0].Package_packageId
-                    }
+                        StoreInformation_storeId: findUserStoreWithEmail[0].storeId
+                    },
+                    attributes: ['userStoreName']
                 });
 
                 // check if the user is new user
                 let newStore = true;
-
-                if (findUSerStore.length != 0) {
+                if (findUserStore.length != 0) {
                     newStore = false;
                 }
+
+                //Find package name
+                const packageName = await PackageModel.findAll({
+                    where: {
+                        packageId: findUserStoreWithEmail[0].Package_packageId
+                    }
+                });
 
                 // const decoded = jwt.verify(userToken,process.env.JWT_SECRET);
                 return res.status(200).send({
                     success: true,
                     msg: 'ล็อกอินสำเร็จค่ะ',
                     data: [{
-                        storeId: findUserStoreWithEmail[0].storeId,
                         storeName: findUserStoreWithEmail[0].storeName,
                         storeRemaining: findUserStoreWithEmail[0].storeRemaining,
-                        packageId: findUserStoreWithEmail[0].Package_packageId,
+                        packageName: packageName[0].packageName,
                         newStore,
+                        userStore: findUserStore,
                         userToken
                     }]
                 });
-
             }
-
         }
+        //if not found email
         else if (findUserStoreWithEmail.length == 0) {
             return res.status(401).send({
                 success: false,
@@ -162,7 +184,7 @@ app.post('/api/store/login-store', async (req, res) => {
    ล็อกอินเข้าเป็นพนักงานขายในร้านเพื่อขายสินค้า
 */
 
-app.post('/api/store/login-employee', async (req,res)=>{
-    
+app.post('/api/store/login-employee', async (req, res) => {
+
 });
 module.exports = app;
