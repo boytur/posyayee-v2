@@ -181,21 +181,24 @@ app.post('/api/store/login-store', async (req, res) => {
                 })
             }
             else {
-                const userToken = jwt.sign({ customerId: findUserStoreWithEmail[0].id },
+                const userToken = jwt.sign({ customerEmail: findUserStoreWithEmail[0].storeOwnEmail },
                     process.env.JWT_SECRET,
-                    { expiresIn: '1d' });
+                    { expiresIn: '30d' });
 
                 const findUSerStore = await UserStoreModel.findAll({
                     where: {
                         StoreInformation_storeId: findUserStoreWithEmail[0].Package_packageId
                     }
                 });
+
+                // check if the user is new user
                 let newStore = true;
 
                 if (findUSerStore.length != 0) {
                     newStore = false;
                 }
 
+                // const decoded = jwt.verify(userToken,process.env.JWT_SECRET);
                 return res.status(200).send({
                     success: true,
                     msg: 'ล็อกอินสำเร็จค่ะ',
