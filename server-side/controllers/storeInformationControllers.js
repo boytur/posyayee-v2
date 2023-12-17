@@ -81,80 +81,7 @@ app.post('/api/store/signup-store', async (req, res) => {
    เพิ่มคนขายในร้าน
 */
 
-app.post('/api/store/signup-employee/:StoreInformation_storeId', upload.single('photo'), async (req, res) => {
-    try {
-        const { userStoreName, userStorePassword} = req.body;
-        const { StoreInformation_storeId } = req.params;
-        const fileName = req.file ? req.file.filename : null;
-
-        //หาว่า StoreInformation_storeId นี้มีอยู่ในระบบไหม
-        const findStoreId = await StoreInformationModel.findAll({
-            where: {
-                storeId: StoreInformation_storeId,
-            }
-        });
-
-        //ถ้าไม่มีส่ง error ออกไป
-        if (findStoreId.length == 0) {
-            return res.status(400).send({
-                success: false,
-                msg: "เกิดข้อผิดพลาดในระบบ ไม่สามารถเพิ่มพนักงานร้านค้าไอดีนี้ได้ค่ะ"
-            });
-        }
-
-        //Validate ข้อมูลก่อน
-        switch (true) {
-            case !userStoreName || !userStorePassword:
-                return res.status(400).send({
-                    success: false,
-                    msg: "กรุณาใส่ข้อมูลให้ครบถ้วนค่ะ"
-                });
-        }
-
-        //หาว่าในร้านมีเจ้าของยัง ถ้าไม่ให้คนที่เพิ่มเข้ามาเป็นเจ้าของ ถ้ามีให้คนที่เพิ่มมาเป็นพนักงาน
-        const findUserInStore = await UserStoreModel.findAll({
-            where: {
-                StoreInformation_storeId: StoreInformation_storeId,
-            }
-        });
-
-        //ถ้าร้านมีคนอยู่แล้ว ที่เพิ่มเข้ามาเป็นเจ้าของ
-        if (findStoreId.length != 0 && findUserInStore.length == 0) {
-            const newUserStore = {
-                userStoreName,
-                userStorePassword,
-                userStoreImagePath: fileName,
-                userStoreRole: "onwer",
-                StoreInformation_storeId: StoreInformation_storeId
-            }
-            const result = await UserStoreModel.create(newUserStore);
-            return res.status(200).send({
-                seccess: true,
-                msg: "เพิ่มเจ้าของร้านเรียบร้อยค่ะ",
-                result
-            });
-        }
-        //ถ้าร้านไม่มีคนอยู่เลย คนที่เพิ่มมาเป็นพนักงาน
-        else if (findStoreId.length != 0 && findUserInStore.length != 0) {
-            const newUserStore = {
-                userStoreName,
-                userStorePassword,
-                userStoreImagePath: fileName,
-                userStoreRole: "employee",
-                StoreInformation_storeId: StoreInformation_storeId
-            }
-            const result = await UserStoreModel.create(newUserStore);
-            return res.status(200).send({
-                success: true,
-                msg: "เพิ่มพนักงานเรียบร้อยค่ะ",
-                result
-            });
-        }
-    }
-    catch (err) {
-        console.log('Error: ', err);
-        return res.status(500).json({ msg: err.message });
-    }
+app.post('/api/store/signup-employee', upload.single('photo'), async (req, res) => {
 });
 
 /* log in to store 
@@ -181,7 +108,7 @@ app.post('/api/store/login-store', async (req, res) => {
                 })
             }
             else {
-                const userToken = jwt.sign({ customerEmail: findUserStoreWithEmail[0].storeOwnEmail },
+                const userToken = jwt.sign({ storeId: findUserStoreWithEmail[0].storeId },
                     process.env.JWT_SECRET,
                     { expiresIn: '30d' });
 
