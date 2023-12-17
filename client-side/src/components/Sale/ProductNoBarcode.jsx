@@ -29,16 +29,16 @@ function ProductNoBarcode() {
             className="overflow-y-scroll md:flex flex-wrap justify-center p-2"
           >
             {data.map((product) => (
-              <div key={product.id} className="p-1">
-                <div className="md:w-[140px] w-full border md:block items-center flex md:h-[185px] h-[60px] bg-white rounded-lg hover:border-2 hover:border-[#4C49ED] cursor-pointer">
-                  <div className="p-1 w-[3.5rem] md:w-full">
+              <div key={product.id} className="md:p-1 p-[1px]">
+                <div className="md:w-[140px] w-full border md:block items-center flex md:h-[185px] h-[70px] bg-white rounded-lg hover:border-2 hover:border-[#4C49ED] cursor-pointer">
+                  <div className="p-1 w-[5rem] md:w-full">
                     <img
-                      className="object-cover md:w-full md:h-[100px] h-[40px] w-[3rem] rounded-md"
+                      className="object-cover md:w-full md:h-[100px] h-[50px] w-full rounded-sm pl-1"
                       src={product.productImagePath}
                       alt=""
                     />
                   </div>
-                  <div className="md:pt-2 md:p-2 md:text-[.9rem] text-[1.2rem] md:pl-2 pl-4 w-3/4 md:w-full">
+                  <div className="md:pt-2 md:p-2 md:text-[.9rem] text-[1rem] md:pl-2 pl-4 w-3/4 md:w-full">
                     <p className=" truncate text-left">{product.productName}</p>
                   </div>
                   <div className="md:px-2 font-bold  w-1/4 md:w-full md:text-[1.3rem] text-[1rem]  text-[#4C49ED]">
