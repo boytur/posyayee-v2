@@ -12,10 +12,14 @@ const UserCreditModel = connection.define('UserCredit', {
         type: DataTypes.STRING(225),
         allowNull: false
     },
-    userCreditTotal: {
+    userCreditAmount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
+    },
+    userCreditPhone:{
+        type: DataTypes.INTEGER,
+        allowNull:false,
     }
 });
 UserCreditModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' });

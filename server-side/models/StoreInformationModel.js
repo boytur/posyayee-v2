@@ -15,11 +15,11 @@ const StoreInformationModel = connection.define('StoreInformation', {
     },
     storeOwnFname: {
         type: DataTypes.STRING(225),
-        allowNull: false,
+        allowNull: true,
     },
     storeOwnLname: {
         type: DataTypes.STRING(225),
-        allowNull: false,
+        allowNull: true,
     },
     storeOwnAddress: {
         type: DataTypes.STRING(225),

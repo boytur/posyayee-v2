@@ -38,6 +38,10 @@ const ProductModel = connection.define('Product', {
         allowNull: true,
         defaultValue: "ทั่วไป"
     },
+    productExpDate:{
+        type: DataTypes.DATE,
+        allowNull: true,
+    }
 });
 ProductModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' })
 
