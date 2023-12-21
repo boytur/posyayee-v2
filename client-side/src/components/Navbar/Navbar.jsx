@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { CiShop } from "react-icons/ci";
@@ -6,7 +7,17 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { IoAnalyticsSharp } from "react-icons/io5";
 import { MdOutlineHistoryToggleOff } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-function Navbar() {
+import { BsCart } from "react-icons/bs";
+
+function Navbar({ dummyProducts }) {
+  //dummyProducts in cart
+  let productsInCart = 0;
+  if (!dummyProducts) {
+    productsInCart = 0;
+  } else {
+    productsInCart = dummyProducts.length + 1;
+  }
+
   const [navMobile, setNavMobile] = useState(false);
 
   const navigate = useNavigate();
@@ -36,13 +47,11 @@ function Navbar() {
               />
               {/* Popover whe click fabar*/}
               {navMobile && (
-                <div className="border absolute mt-3 w-[15rem] h-[18rem] bg-white shadow-xl rounded-md z-50">
+                <div className="border absolute mt-3 w-[95%] h-[26rem] bg-white shadow-xl rounded-md z-50">
                   <div className="flex flex-col p-2 gap-1">
                     {/* Sale product */}
                     <button
-                      className={`p-3 rounded-md ${getActiveButton(
-                        "/"
-                      )}`}
+                      className={`p-3 rounded-md ${getActiveButton("/")}`}
                       onClick={() => handleNavigate("/")}
                     >
                       <div className=" flex gap-2 justify-left">
@@ -102,6 +111,24 @@ function Navbar() {
                         <p>ประวัติการขาย</p>
                       </div>
                     </button>
+                    {/* Img profile for mobile */}
+                    <br />
+                    <hr />
+                    <button className="p-3 rounded-md items-center flex gap-1">
+                      <div>
+                        <div className=" flex gap-2 justify-left font-bold">
+                          <img
+                            className="rounded-[100%] w-[2rem] h-[2rem] object-cover"
+                            src="https://s.isanook.com/ga/0/ud/222/1112961/popass(1).jpg"
+                            alt=""
+                          />
+                          <p>ร้านค้าแม่ยาหยี</p>
+                        </div>
+                        <div className="w-full justify-end flex">
+                          <p className="text-[12px]">คนขาย: แสงจันทร์</p>
+                        </div>
+                      </div>
+                    </button>
                   </div>
                 </div>
               )}
@@ -118,12 +145,22 @@ function Navbar() {
               <span className=" font-bold">คนขาย: </span>แสงจันทร์
             </p>
           </div>
-          <div className="pr-3 items-center flex h-[3.2rem] cursor-pointer">
+          <div className="pr-3 items-center md:flex h-[3.2rem] cursor-pointer hidden">
             <img
               className="rounded-[100%] w-[2.5rem] h-[2.5rem] object-cover"
               src="https://s.isanook.com/ga/0/ud/222/1112961/popass(1).jpg"
               alt=""
             />
+          </div>
+          {/*Total product in cart */}
+          <div className="pr-4 items-center flex h-[3.2rem] md:hidden relative">
+            <BsCart
+              size={29}
+              className="cursor-pointer hover:scale-105 text-[#4C49ED]"
+            />
+            <p className="text-sm border rounded-full w-6 h-6 text-center absolute top-1 left-[15px] bg-[#fe0000] text-white">
+              {productsInCart}
+            </p>
           </div>
         </div>
       </div>

@@ -22,7 +22,7 @@ const generateProduct = (id) => ({
 });
 
 // Create 20 additional entries
-for (let i = 2; i <= 100; i++) {
+for (let i = 2; i <= 10; i++) {
     data.push(generateProduct(i));
 }
 

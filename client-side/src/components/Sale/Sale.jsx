@@ -2,12 +2,13 @@ import Aside from "../Aside/Aside";
 import Navbar from "../Navbar/Navbar";
 import ProductNoBarcode from "./ProductNoBarcode";
 import Scan from "./Scan";
+import dummyProducts from "./products";
 
 function Sale() {
   return (
     <div className=" w-full h-[100vh]">
       <div className="w-full absolute">
-        <Navbar />
+        <Navbar dummyProducts = {dummyProducts}/>
       </div>
       <div className="flex">
         <div className="z-30">

@@ -31,10 +31,10 @@ const upload = multer({ storage, limits: { fileSize: 1 * 1024 * 1024 } });
 */
 
 app.post('/api/store/signup-store', async (req, res) => {
-    const { Package_packageId, storeName, storeOwnFname, storeOwnLname, storeOwnEmail, storeOwnPassword } = req.body;
+    const { Package_packageId, storeName, storeOwnEmail, storeOwnPassword } = req.body;
     try {
         // Validate data
-        if (!Package_packageId || !storeName || !storeOwnFname || !storeOwnLname || !storeOwnEmail || !storeOwnPassword) {
+        if (!Package_packageId || !storeName || !storeOwnEmail || !storeOwnPassword) {
             return res.status(400).json({
                 success: false,
                 msg: "กรุณากรอกข้อมูลให้ครบถ้วน!"
@@ -59,8 +59,6 @@ app.post('/api/store/signup-store', async (req, res) => {
 
         const newUser = {
             storeName,
-            storeOwnFname,
-            storeOwnLname,
             storeOwnEmail,
             storeOwnPassword: hash,
             Package_packageId
