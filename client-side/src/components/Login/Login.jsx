@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./Login.css";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 function Login() {
   document.title = "POSYAYEE 🔐 Login";
@@ -10,9 +12,62 @@ function Login() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  // Payload
+  const [payLoad, setPayLoad] = useState({
+    storeOwnEmail: "",
+    storeOwnPassword: "",
+  });
+
+  // Submit req login
+  const API = import.meta.env.VITE_API_KEY;
+  const handleSubmit = async (e) => {
+    console.log(payLoad);
+    e.preventDefault();
+    // Validate data
+    if (
+      payLoad.storeOwnEmail.replace(" ", "") === "" ||
+      payLoad.storeOwnPassword === ""
+    ) {
+      Swal.fire({
+        title: "กรุณากรอกข้อมูลให้ครบถ้วนค่ะ!",
+        text: "อีเมลหรือรหัสผ่านยังไม่ได้กรอกค่ะ",
+        icon: "question",
+      });
+    } else {
+      // Send req to server
+      try {
+        await axios
+          .post(`${API}/api/store/login-store`, payLoad)
+          .then((res) => {
+            // Login success
+            if (res.data.success) {
+              const userData = res.data.data[0];
+              Swal.fire({
+                title: res.data.msg,
+                icon: "success",
+                timer: 2000,
+              });
+              //Set user token
+              localStorage.setItem("userToken", userData.userToken);
+            }
+          });
+        // Login fail
+      } catch (err) {
+        Swal.fire({
+          title: err.response.data.msg,
+          icon: "error",
+          timer: 5000,
+        });
+      }
+    }
+  };
+
   return (
     <div className="login-background">
-      <form className="md:w-[370px] md:h-[500px] w-full h-full bg-white md:rounded-md flex-col z-50">
+      <form
+        onSubmit={(e) => handleSubmit(e)}
+        className="md:w-[370px] md:h-[500px] w-full h-full bg-white md:rounded-md flex-col z-50"
+      >
         <div className="flex items-center gap-1 justify-center md:mt-7 mt-24">
           <h1 className="font-bold text-[2.7rem] pt-[3.3px]">
             <span className="text-[#4C49ED]">POS</span>YAYEE
@@ -35,6 +90,9 @@ function Login() {
             type="email"
             placeholder="example@gmail.com"
             required
+            onChange={(e) =>
+              setPayLoad({ ...payLoad, storeOwnEmail: e.target.value })
+            }
           />
         </div>
         <div className="w-full md:px-6 px-3">
@@ -51,12 +109,15 @@ function Login() {
               type={showPassword ? "text" : "password"}
               placeholder="******************"
               required
+              onChange={(e) =>
+                setPayLoad({ ...payLoad, storeOwnPassword: e.target.value })
+              }
             />
             <span
               className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
               onClick={togglePasswordVisibility}
             >
-              {showPassword ? <FaRegEye/> : <FaRegEyeSlash/>}
+              {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </span>
           </div>
         </div>
