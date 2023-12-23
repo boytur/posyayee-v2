@@ -1,15 +1,38 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { IoPersonAddOutline } from "react-icons/io5";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { config } from "../../config";
+import { useNavigate } from "react-router-dom";
 
 function NewStore() {
-  const [payLoad, setPayLoad] = useState([
-    "userStoreName",
-    "userStoreImage",
-    "userStoreRole",
-    "userStorePassword",
-  ]);
+  //check if user is already owner
+  const navigate = useNavigate();
+  const [newStore, setNewStore] = useState(true);
+
+  useEffect(() => {
+    const userAready = sessionStorage.getItem("userStore");
+    if (userAready !== "[]") {
+      setNewStore(false);
+      navigate("/choose-seller");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // Password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const [payLoad, setPayLoad] = useState({
+    userStoreName: "",
+    userStoreImagePath: null,
+    userStoreRole: "",
+    userStorePassword: "",
+  });
 
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -28,14 +51,34 @@ function NewStore() {
     }
   };
 
-  const handleNextClick = (e) => {
+  //Handle submit
+  const API = import.meta.env.VITE_API_KEY;
+  const handleNextClick = async (e) => {
+    console.log(selectedFile);
     e.preventDefault();
-    setPayLoad({ ...payLoad, userStoreImage: selectedFile });
-    console.log(payLoad);
+    setPayLoad({ ...payLoad, userStoreImagePath: selectedFile });
+
+    try {
+      //เพราะว่ามีไฟล์เลยต้องใช้ formData
+      const formData = new FormData();
+      formData.append("userStoreName", payLoad.userStoreName);
+      formData.append("userStoreRole", payLoad.userStoreRole);
+      formData.append("userStorePassword", payLoad.userStorePassword);
+      formData.append("photo", selectedFile);
+
+      await axios
+        .post(`${API}/api/store/signup-employee`, formData, config)
+        .then((res) => {
+          navigate("/");
+          return res;
+        });
+    } catch (err) {
+      console.log("Error", err);
+    }
   };
 
   return (
-    <div className=" flex justify-center flex-col">
+    <div className={`justify-center flex-col ${!newStore ? "hidden" : "flex"}`}>
       <nav className="flex h-[4rem] w-full justify-between items-center md:px-10 px-2">
         <div className=" cursor-pointer">
           <span className="text-[2.2rem] font-bold text-[#4C49ED]">POS</span>
@@ -70,8 +113,11 @@ function NewStore() {
                 <IoPersonAddOutline size={100} color="#4C49ED" />
               )}
             </div>
-            <div className="text-[2rem] font-bold mb-5 text-center">
-              <h1>มาตั้งค่าคนขายกัน</h1>
+            <div className="mb-5 text-center">
+              <h1 className="text-[2rem] font-bold">มาตั้งค่าคนขายกัน</h1>
+              <p className=" text-sm">
+                คนขายคนแรกจะมีสิทธิ์เป็นเจ้าของร้านโดยอัตโนมัติ
+              </p>
             </div>
             <div className="flex flex-col mb-5">
               <label
@@ -112,18 +158,26 @@ function NewStore() {
                     setPayLoad({ ...payLoad, userStoreName: e.target.value })
                   }
                 />
-                <input
-                  className="h-[3rem] w-full pl-2 rounded-md text-[1.2rem] border focus:outline-[#4C49ED]"
-                  placeholder="กรุณาตั้งรหัสผ่าน 6 หลัก"
-                  type="password"
-                  required
-                  onChange={(e) =>
-                    setPayLoad({
-                      ...payLoad,
-                      userStorePassword: e.target.value,
-                    })
-                  }
-                />
+                <div className=" relative">
+                  <input
+                    className="h-[3rem] w-full pl-2 rounded-md text-[1.2rem] border focus:outline-[#4C49ED]"
+                    placeholder="กรุณาตั้งรหัสผ่าน 6 หลัก"
+                    type={showPassword ? "number" : "password"}
+                    required
+                    onChange={(e) =>
+                      setPayLoad({
+                        ...payLoad,
+                        userStorePassword: e.target.value,
+                      })
+                    }
+                  />
+                  <span
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+                  </span>
+                </div>
                 <div className="flex gap-2">
                   <button
                     type="submit"
