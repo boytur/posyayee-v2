@@ -34,6 +34,7 @@ function Navbar({ dummyProducts }) {
   };
 
   const storeName = sessionStorage.getItem("storeName").replace(/"/g, "");
+  const userStore = sessionStorage.getItem("userStore").replace(/"/g, "");
 
   return (
     <div className="w-full h-[3.2rem]">
@@ -127,7 +128,7 @@ function Navbar({ dummyProducts }) {
                           <p>{storeName}</p>
                         </div>
                         <div className="w-full justify-end flex">
-                          <p className="text-[12px]">คนขาย: แสงจันทร์</p>
+                          <p className="text-[12px]">คนขาย: {userStore}</p>
                         </div>
                       </div>
                     </button>
@@ -144,7 +145,7 @@ function Navbar({ dummyProducts }) {
               สวัสดี, {storeName}
             </p>
             <p className="md:text-[.7rem] text-[8px] flex justify-end">
-              <span className=" font-bold">คนขาย: </span>แสงจันทร์
+              <span className=" font-bold">คนขาย: </span>{userStore}
             </p>
           </div>
           <div className="pr-3 items-center md:flex h-[3.2rem] cursor-pointer hidden">
