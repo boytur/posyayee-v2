@@ -33,6 +33,8 @@ function Navbar({ dummyProducts }) {
     navigate(route);
   };
 
+  const storeName = sessionStorage.getItem("storeName").replace(/"/g, "");
+
   return (
     <div className="w-full h-[3.2rem]">
       <div className="w-full flex">
@@ -122,7 +124,7 @@ function Navbar({ dummyProducts }) {
                             src="https://s.isanook.com/ga/0/ud/222/1112961/popass(1).jpg"
                             alt=""
                           />
-                          <p>ร้านค้าแม่ยาหยี</p>
+                          <p>{storeName}</p>
                         </div>
                         <div className="w-full justify-end flex">
                           <p className="text-[12px]">คนขาย: แสงจันทร์</p>
@@ -139,7 +141,7 @@ function Navbar({ dummyProducts }) {
         <div className="w-full h-full flex justify-end gap-3 text-[#33363F]">
           <div className=" md:flex md:flex-col h-full md:pt-1 pt-3 hidden">
             <p className="md:text-[1rem] font-bold text-[10px]">
-              สวัสดี, ร้านค้าแม่ยาหยี
+              สวัสดี, {storeName}
             </p>
             <p className="md:text-[.7rem] text-[8px] flex justify-end">
               <span className=" font-bold">คนขาย: </span>แสงจันทร์

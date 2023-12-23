@@ -1,9 +1,14 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import "./Login.css";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../services/Authorize";
+
+const isLogedIn = sessionStorage.getItem("isLogedIn");
 
 function Login() {
   document.title = "POSYAYEE 🔐 Login";
@@ -12,6 +17,7 @@ function Login() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  const navigate = useNavigate();
   // Payload
   const [payLoad, setPayLoad] = useState({
     storeOwnEmail: "",
@@ -21,13 +27,9 @@ function Login() {
   // Submit req login
   const API = import.meta.env.VITE_API_KEY;
   const handleSubmit = async (e) => {
-    console.log(payLoad);
     e.preventDefault();
     // Validate data
-    if (
-      payLoad.storeOwnEmail.replace(" ", "") === "" ||
-      payLoad.storeOwnPassword === ""
-    ) {
+    if (!payLoad.storeOwnEmail.trim() || !payLoad.storeOwnPassword.trim()) {
       Swal.fire({
         title: "กรุณากรอกข้อมูลให้ครบถ้วนค่ะ!",
         text: "อีเมลหรือรหัสผ่านยังไม่ได้กรอกค่ะ",
@@ -40,16 +42,15 @@ function Login() {
           .post(`${API}/api/store/login-store`, payLoad)
           .then((res) => {
             // Login success
-            if (res.data.success) {
-              const userData = res.data.data[0];
-              Swal.fire({
-                title: res.data.msg,
-                icon: "success",
-                timer: 2000,
-              });
-              //Set user token
-              localStorage.setItem("userToken", userData.userToken);
-            }
+            auth(res.data, () => {
+              if (res.data.data[0].newStore) {
+                navigate("/new-store");
+                window.location.reload(false);
+              } else {
+                navigate("/choose-seller");
+                window.location.reload(false);
+              }
+            });
           });
         // Login fail
       } catch (err) {
@@ -63,7 +64,7 @@ function Login() {
   };
 
   return (
-    <div className="login-background">
+    <div className={`login-background ${isLogedIn !== null ? "hidden": ""}`}>
       <form
         onSubmit={(e) => handleSubmit(e)}
         className="md:w-[370px] md:h-[500px] w-full h-full bg-white md:rounded-md flex-col z-50"
