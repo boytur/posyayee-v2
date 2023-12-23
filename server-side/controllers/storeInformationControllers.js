@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 });
 
 //จำกัดขนาดไม่เกิน 1 MB
-const upload = multer({ storage, limits: { fileSize: 1 * 1024 * 1024 } });
+const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
 
 /*sign up a new store
   สมัครร้านค้าใหม่
@@ -79,8 +79,54 @@ app.post('/api/store/signup-store', async (req, res) => {
 /* sign up a new user in store 
    เพิ่มคนขายในร้าน
 */
+const auth = require("../Auth/Authen");
 
-app.post('/api/store/signup-employee', upload.single('photo'), async (req, res) => {
+app.post('/api/store/signup-employee', auth.isLogedin, upload.single('photo'), async (req, res) => {
+    try {
+        //get store id from token
+        const token = req.headers.authorization;
+        const tokenWithoutBearer = token.replace("Bearer ","");
+        const decoded = jwt.decode(tokenWithoutBearer);
+        const storeId = decoded.storeId;
+        let {userStoreName, userStorePassword , userStoreRole} = req.body;
+        const userStoreImagePath = req.file ? req.file.path : null;
+
+        //validate data
+        switch(true){
+            case !userStoreName || !userStorePassword || !storeId:
+                return res.status(400).send({
+                    success:false,
+                    mgs:"กรุณาระบุข้อมูลให้ครบถ้วนค่ะ!"
+                });
+        }
+
+        //check if new user
+        if(!userStoreRole){
+            userStoreRole = "owner";
+        }
+
+        //create new employee
+        const newEmployee = {
+            userStoreName,
+            userStorePassword,
+            userStoreImagePath:userStoreImagePath,
+            userStoreRole,
+            StoreInformation_storeId:storeId
+        };
+
+        await UserStoreModel.create(newEmployee);
+        return res.status(200).send({
+            success:true,
+            msg:"เพิ่มเจ้าของร้านเรียบร้อยค่ะ"
+        });
+    }
+    catch(err){
+        res.status(500).send({
+            success:false,
+            msg: "Couldn't create employee"
+        })
+        console.log("Err",err)
+    }
 });
 
 /* log in to store 
@@ -124,7 +170,7 @@ app.post('/api/store/login-store', async (req, res) => {
                 const userToken = jwt.sign({ storeId: findUserStoreWithEmail[0].storeId },
                     process.env.JWT_SECRET,
                     { expiresIn: '30d' });
-                
+
                 //find user in store by storeId
                 const findUserStore = await UserStoreModel.findAll({
                     where: {
