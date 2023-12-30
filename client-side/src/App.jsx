@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Sale from "./components/Sale/Sale";
-import Stock from "./components/Stock/Stock";
-import AddStock from "./components/AddStock/AddStock";
-import Analysis from "./components/Analysis/Analysis";
-import History from "./components/History/History";
-import Login from "./components/Login/Login";
+import Sale from "./pages/Sale/Sale.jsx";
+import Stock from "./pages/Stock/Stock";
+import AddStock from "./pages/AddStock/AddStock";
+import Analysis from "./pages/Analysis/Analysis";
+import History from "./pages/History/History";
+import Login from "./pages/Login/Login";
 import NewStore from "./components/ChooseSeller/NewStore";
 import ChooseSeller from "./components/ChooseSeller/ChooseSeller";
 import axios from "axios";

@@ -1,5 +1,5 @@
-import Aside from "../Aside/Aside";
-import Navbar from "../Navbar/Navbar";
+import Aside from "../../components/Aside/Aside";
+import Navbar from "../../components/Navbar/Navbar";
 import ProductNoBarcode from "./ProductNoBarcode";
 import Scan from "./Scan";
 import dummyProducts from "./products";

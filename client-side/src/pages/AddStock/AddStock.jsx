@@ -1,7 +1,7 @@
-import Aside from "../Aside/Aside"
-import Navbar from "../Navbar/Navbar"
+import Aside from "../../components/Aside/Aside"
+import Navbar from "../../components/Navbar/Navbar"
 
-function Stock() {
+function AddStock() {
   return (
     <div className=" w-full h-[100vh]">
     <div className="w-full absolute">
@@ -17,7 +17,7 @@ function Stock() {
         className="w-full bg-[#F9FAFB] h-[100vh] mt-[3rem]"
       >
         <div className="border w-full h-full">
-          Stock
+          Add stock
         </div>
       </div>
     </div>
@@ -25,4 +25,4 @@ function Stock() {
   )
 }
 
-export default Stock;
+export default AddStock

@@ -8,7 +8,7 @@ export const auth = (response, next) => {
     sessionStorage.setItem("storeName", JSON.stringify(response.data[0].storeName));
     sessionStorage.setItem("storeRemaining", JSON.stringify(response.data[0].storeRemaining));
   }
-  
+
   // ส่งต่อไปยังฟังก์ชั่นถัดไป (next)
   next();
 };
