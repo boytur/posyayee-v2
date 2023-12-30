@@ -33,8 +33,8 @@ function Navbar({ dummyProducts }) {
     navigate(route);
   };
 
-  const storeName = sessionStorage.getItem("storeName").replace(/"/g, "");
-  const userStore = sessionStorage.getItem("userStore").replace(/"/g, "");
+  // const storeName = sessionStorage.getItem("storeName").replace(/"/g, "");
+  // const userStore = sessionStorage.getItem("userStore").replace(/"/g, "");
 
   return (
     <div className="w-full h-[3.2rem]">
@@ -125,10 +125,10 @@ function Navbar({ dummyProducts }) {
                             src="https://s.isanook.com/ga/0/ud/222/1112961/popass(1).jpg"
                             alt=""
                           />
-                          <p>{storeName}</p>
+                          {/* <p>{storeName}</p> */}
                         </div>
                         <div className="w-full justify-end flex">
-                          <p className="text-[12px]">คนขาย: {userStore}</p>
+                          {/* <p className="text-[12px]">คนขาย: {userStore}</p> */}
                         </div>
                       </div>
                     </button>
@@ -142,10 +142,10 @@ function Navbar({ dummyProducts }) {
         <div className="w-full h-full flex justify-end gap-3 text-[#33363F]">
           <div className=" md:flex md:flex-col h-full md:pt-1 pt-3 hidden">
             <p className="md:text-[1rem] font-bold text-[10px]">
-              สวัสดี, {storeName}
+              {/* สวัสดี, {storeName} */}
             </p>
             <p className="md:text-[.7rem] text-[8px] flex justify-end">
-              <span className=" font-bold">คนขาย: </span>{userStore}
+              {/* <span className=" font-bold">คนขาย: </span>{userStore} */}
             </p>
           </div>
           <div className="pr-3 items-center md:flex h-[3.2rem] cursor-pointer hidden">
