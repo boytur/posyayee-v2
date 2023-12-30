@@ -80,28 +80,25 @@ app.post('/api/store/signup-store', async (req, res) => {
    เพิ่มคนขายในร้าน
 */
 const auth = require("../Auth/Authen");
+const decodeStoreId = require('../middleware/decodeStoreId');
 
 app.post('/api/store/signup-employee', auth.isLogedin, upload.single('photo'), async (req, res) => {
     try {
-        //get store id from token
-        const token = req.headers.authorization;
-        const tokenWithoutBearer = token.replace("Bearer ","");
-        const decoded = jwt.decode(tokenWithoutBearer);
-        const storeId = decoded.storeId;
-        let {userStoreName, userStorePassword , userStoreRole} = req.body;
+        const storeId = decodeStoreId(req);
+        let { userStoreName, userStorePassword, userStoreRole } = req.body;
         const userStoreImagePath = req.file ? req.file.path : null;
 
         //validate data
-        switch(true){
+        switch (true) {
             case !userStoreName || !userStorePassword || !storeId:
                 return res.status(400).send({
-                    success:false,
-                    mgs:"กรุณาระบุข้อมูลให้ครบถ้วนค่ะ!"
+                    success: false,
+                    mgs: "กรุณาระบุข้อมูลให้ครบถ้วนค่ะ!"
                 });
         }
 
         //check if new user
-        if(!userStoreRole){
+        if (!userStoreRole) {
             userStoreRole = "owner";
         }
 
@@ -109,23 +106,23 @@ app.post('/api/store/signup-employee', auth.isLogedin, upload.single('photo'), a
         const newEmployee = {
             userStoreName,
             userStorePassword,
-            userStoreImagePath:userStoreImagePath,
+            userStoreImagePath: userStoreImagePath,
             userStoreRole,
-            StoreInformation_storeId:storeId
+            StoreInformation_storeId: storeId
         };
 
         await UserStoreModel.create(newEmployee);
         return res.status(200).send({
-            success:true,
-            msg:"เพิ่มเจ้าของร้านเรียบร้อยค่ะ"
+            success: true,
+            msg: "เพิ่มเจ้าของร้านเรียบร้อยค่ะ"
         });
     }
-    catch(err){
+    catch (err) {
         res.status(500).send({
-            success:false,
+            success: false,
             msg: "Couldn't create employee"
         })
-        console.log("Err",err)
+        console.log("Err", err)
     }
 });
 
@@ -201,7 +198,6 @@ app.post('/api/store/login-store', async (req, res) => {
                         storeRemaining: findUserStoreWithEmail[0].storeRemaining,
                         packageName: packageName[0].packageName,
                         newStore,
-                        userStore: findUserStore,
                         userToken
                     }]
                 });
@@ -221,6 +217,33 @@ app.post('/api/store/login-store', async (req, res) => {
             success: false,
             msg: "มีบางอย่างผิดพลาดกรุณาลองใหม่หรือติดต่อโพสยาหยี!"
         });
+    }
+});
+
+/* View saler 
+   ดูคนขายในร้านทั้งหมด
+*/
+app.get('/api/store/view-employee', async (req, res) => {
+    try {
+        const storeId = decodeStoreId(req);
+        //find user in store by storeId
+        const findUserStore = await UserStoreModel.findAll({
+            where: {
+                StoreInformation_storeId: storeId
+            },
+            attributes: ['userStoreId', 'userStoreName', 'userStoreImagePath']
+        });
+        res.status(200).send({
+            success: true,
+            userStore: findUserStore
+        });
+    }
+    catch (err) {
+        console.log(err)
+        res.status(400).send({
+            success: false,
+            msg: "มีบางอย่างผิดพลาดกรุณาลองใหม่หรือติดต่อโพสยาหยี!"
+        })
     }
 });
 

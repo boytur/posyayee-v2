@@ -2,7 +2,7 @@ module.exports = {
     isLogedin: (req, res, next) => {
         const jwt = require('jsonwebtoken');
         const authorizationHeader = req.headers.authorization;
-        //console.log(authorizationHeader)
+        console.log(authorizationHeader)
         if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
             return res.status(401).send(
                 ` 
