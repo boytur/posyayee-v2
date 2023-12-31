@@ -113,7 +113,7 @@ app.post('/api/store/signup-employee', auth.isLogedin, upload.single('photo'), a
             await UserStoreModel.create(newEmployee);
             return res.status(200).send({
                 success: true,
-                msg: "เพิ่มเจ้าของร้านเรียบร้อยค่ะ"
+                msg: `เพิ่ม ${userStoreRole} เรียบร้อยค่ะ`
             });
         }
         catch (err) {
@@ -171,7 +171,7 @@ app.post('/api/store/login-store', async (req, res) => {
             const expirationDate = new Date();
             expirationDate.setDate(expirationDate.getDate() + 30);
             res.cookie('storeToken', storeToken, {
-                maxAge:30 * 24 * 60 * 60 * 1000, //30 days
+                maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
                 secure: true,
                 httpOnly: true,
                 sameSite: false,
@@ -180,7 +180,7 @@ app.post('/api/store/login-store', async (req, res) => {
 
             return res.status(200).send({
                 success: true,
-                msg: 'ล็อกอินสำเร็จค่ะ',
+                msg: `ล็อกอินสำเร็จค่ะ ${findUserStoreWithEmail[0].storeName}`,
             });
         }
         //if not found email
@@ -212,7 +212,7 @@ app.get('/api/store/view-employee', auth.isLogedin, async (req, res) => {
                 where: {
                     StoreInformation_storeId: storeId
                 },
-                attributes: ['userStoreId', 'userStoreName', 'userStoreImagePath']
+                attributes: ['userStoreId', 'userStoreName', 'userStoreImagePath', 'userStoreRole', 'StoreInformation_storeId']
             });
             res.status(200).send({
                 success: true,
@@ -239,5 +239,6 @@ app.get('/api/store/view-employee', auth.isLogedin, async (req, res) => {
    ล็อกอินเข้าเป็นพนักงานขายในร้านเพื่อขายสินค้า
 */
 app.post('/api/store/login-employee', async (req, res) => {
+    
 });
 module.exports = app;
