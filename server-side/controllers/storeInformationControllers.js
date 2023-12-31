@@ -7,29 +7,20 @@ const bcrypt = require('bcrypt');
 const util = require('util');
 const saltRounds = 10;
 const hashAsync = util.promisify(bcrypt.hash);
-const path = require('path');
 const jwt = require('jsonwebtoken');
+
+const auth = require("../authentication/authen");
+const decodeStoreId = require('../middleware/decodeStoreId');
 
 //multer for uploading files
 const multer = require('multer');
-const PackageModel = require('../models/PackageModel');
-const storage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, 'public/img-avatar');
-    },
-    filename: function (req, file, callback) {
-        const ext = path.extname(file.originalname);
-        callback(null, file.fieldname + '-' + Date.now() + ext);
-    },
-});
-
-//จำกัดขนาดไม่เกิน 1 MB
-const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+const uploadToB2 = require('../middleware/uploadB2');
 
 /*sign up a new store
   สมัครร้านค้าใหม่
 */
-
 app.post('/api/store/signup-store', async (req, res) => {
     const { Package_packageId, storeName, storeOwnEmail, storeOwnPassword } = req.body;
     try {
@@ -79,57 +70,68 @@ app.post('/api/store/signup-store', async (req, res) => {
 /* sign up a new user in store 
    เพิ่มคนขายในร้าน
 */
-const auth = require("../Auth/Authen");
-const decodeStoreId = require('../middleware/decodeStoreId');
-
 app.post('/api/store/signup-employee', auth.isLogedin, upload.single('photo'), async (req, res) => {
-    try {
-        const storeId = decodeStoreId(req);
-        let { userStoreName, userStorePassword, userStoreRole } = req.body;
-        const userStoreImagePath = req.file ? req.file.path : null;
+    const storeId = decodeStoreId(req);
+    const fileName = generateFileName();
+    const imageURLs = req.file ? `${process.env.URL}${fileName}` : 'https://placehold.co/600x400/EEE/31343C';
 
-        //validate data
-        switch (true) {
-            case !userStoreName || !userStorePassword || !storeId:
-                return res.status(400).send({
-                    success: false,
-                    mgs: "กรุณาระบุข้อมูลให้ครบถ้วนค่ะ!"
-                });
-        }
+    await addNewEmployee(req, imageURLs);
 
-        //check if new user
-        if (!userStoreRole) {
-            userStoreRole = "owner";
-        }
-
-        //create new employee
-        const newEmployee = {
-            userStoreName,
-            userStorePassword,
-            userStoreImagePath: userStoreImagePath,
-            userStoreRole,
-            StoreInformation_storeId: storeId
-        };
-
-        await UserStoreModel.create(newEmployee);
-        return res.status(200).send({
-            success: true,
-            msg: "เพิ่มเจ้าของร้านเรียบร้อยค่ะ"
-        });
+    if (!req.file) {
+        console.log('Image not found!');
+    } else {
+        await uploadToB2(req.file.buffer, fileName, res);
     }
-    catch (err) {
-        res.status(500).send({
-            success: false,
-            msg: "Couldn't create employee"
-        })
-        console.log("Err", err)
+
+    async function addNewEmployee(req, imageURLs) {
+        try {
+            let { userStoreName, userStorePassword, userStoreRole } = req.body;
+
+            //validate data
+            switch (true) {
+                case !userStoreName || !userStorePassword || !storeId:
+                    return res.status(400).send({
+                        success: false,
+                        mgs: "กรุณาระบุข้อมูลให้ครบถ้วนค่ะ!"
+                    });
+            }
+
+            //check if new user
+            if (!userStoreRole) {
+                userStoreRole = "owner";
+            }
+
+            //create new employee
+            const newEmployee = {
+                userStoreName,
+                userStorePassword,
+                userStoreImagePath: imageURLs,
+                userStoreRole,
+                StoreInformation_storeId: storeId
+            };
+
+            await UserStoreModel.create(newEmployee);
+            return res.status(200).send({
+                success: true,
+                msg: "เพิ่มเจ้าของร้านเรียบร้อยค่ะ"
+            });
+        }
+        catch (err) {
+            res.status(500).send({
+                success: false,
+                msg: "Couldn't create employee"
+            })
+            console.log("Err", err)
+        }
+    }
+    function generateFileName() {
+        return `img${Date.now()}`;
     }
 });
 
 /* log in to store 
    ล็อกอินเข้ามาในร้าน
 */
-
 app.post('/api/store/login-store', async (req, res) => {
     const { storeOwnEmail, storeOwnPassword } = req.body;
     try {
@@ -160,48 +162,26 @@ app.post('/api/store/login-store', async (req, res) => {
                     msg: 'รหัสผ่านไม่ถูกต้องค่ะ!'
                 });
             }
-            //if password match
-            else {
+            //send jwt to user
+            const storeToken = jwt.sign({ storeId: findUserStoreWithEmail[0].storeId },
+                process.env.JWT_SECRET,
+                { expiresIn: '1d' });
 
-                //send jwt to user
-                const userToken = jwt.sign({ storeId: findUserStoreWithEmail[0].storeId },
-                    process.env.JWT_SECRET,
-                    { expiresIn: '30d' });
+            // Calculate the expiration date for 30 days from now
+            const expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 30);
+            res.cookie('storeToken', storeToken, {
+                maxAge:30 * 24 * 60 * 60 * 1000, //30 days
+                secure: true,
+                httpOnly: true,
+                sameSite: false,
+                expires: expirationDate
+            });
 
-                //find user in store by storeId
-                const findUserStore = await UserStoreModel.findAll({
-                    where: {
-                        StoreInformation_storeId: findUserStoreWithEmail[0].storeId
-                    },
-                    attributes: ['userStoreName']
-                });
-
-                // check if the user is new user
-                let newStore = true;
-                if (findUserStore.length != 0) {
-                    newStore = false;
-                }
-
-                //Find package name
-                const packageName = await PackageModel.findAll({
-                    where: {
-                        packageId: findUserStoreWithEmail[0].Package_packageId
-                    }
-                });
-
-                // const decoded = jwt.verify(userToken,process.env.JWT_SECRET);
-                return res.status(200).send({
-                    success: true,
-                    msg: 'ล็อกอินสำเร็จค่ะ',
-                    data: [{
-                        storeName: findUserStoreWithEmail[0].storeName,
-                        storeRemaining: findUserStoreWithEmail[0].storeRemaining,
-                        packageName: packageName[0].packageName,
-                        newStore,
-                        userToken
-                    }]
-                });
-            }
+            return res.status(200).send({
+                success: true,
+                msg: 'ล็อกอินสำเร็จค่ะ',
+            });
         }
         //if not found email
         else if (findUserStoreWithEmail.length == 0) {
@@ -223,20 +203,28 @@ app.post('/api/store/login-store', async (req, res) => {
 /* View saler 
    ดูคนขายในร้านทั้งหมด
 */
-app.get('/api/store/view-employee', async (req, res) => {
+app.get('/api/store/view-employee', auth.isLogedin, async (req, res) => {
     try {
         const storeId = decodeStoreId(req);
         //find user in store by storeId
-        const findUserStore = await UserStoreModel.findAll({
-            where: {
-                StoreInformation_storeId: storeId
-            },
-            attributes: ['userStoreId', 'userStoreName', 'userStoreImagePath']
-        });
-        res.status(200).send({
-            success: true,
-            userStore: findUserStore
-        });
+        if (storeId) {
+            const findUserStore = await UserStoreModel.findAll({
+                where: {
+                    StoreInformation_storeId: storeId
+                },
+                attributes: ['userStoreId', 'userStoreName', 'userStoreImagePath']
+            });
+            res.status(200).send({
+                success: true,
+                userStore: findUserStore
+            });
+        }
+        else {
+            return res.status(404).send({
+                success: false,
+                msg: "คุกกี้ไม่ถูกต้องค่ะ!"
+            });
+        }
     }
     catch (err) {
         console.log(err)
@@ -250,8 +238,6 @@ app.get('/api/store/view-employee', async (req, res) => {
 /* log in to employee sale service
    ล็อกอินเข้าเป็นพนักงานขายในร้านเพื่อขายสินค้า
 */
-
 app.post('/api/store/login-employee', async (req, res) => {
-
 });
 module.exports = app;
