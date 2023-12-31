@@ -5,7 +5,9 @@ const port = process.env.PORT || 3000
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan')
-const auth = require("./Auth/Authen");
+const auth = require("./authentication/authen");
+const cookieParser = require('cookie-parser')
+
 //midleware configuration
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -16,6 +18,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser())
 
 //ทำให้ folder เป็น public
 app.use(express.static('public'));
