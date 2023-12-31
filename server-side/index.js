@@ -5,6 +5,8 @@ const port = process.env.PORT || 3000
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan')
+const auth = require("./authentication/authen");
+const cookieParser = require('cookie-parser')
 
 //midleware configuration
 app.use(morgan('dev'));
@@ -16,18 +18,17 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser())
 
 //ทำให้ folder เป็น public
 app.use(express.static('public'));
 
 //default routes
-app.get('/', (req, res) => {
-  res.status(200).send(`    
-  <div style=" width: 100%; height: 90vh; display: flex; justify-content: center; align-items: center;">
-    <div> 
-      <img src="https://media.tenor.com/ZX95mDnlodwAAAAd/the-rock-sus-eye.gif" />
-    </div>
-  </div>`);
+app.get('/', auth.isLogedin, async (req, res) => {
+  res.status(200).send({
+    success: true,
+    msg: "hihi"
+  })
 });
 
 const PackageController = require('./controllers/packageController');

@@ -32,15 +32,16 @@ function Aside() {
       <div className="flex justify-center">
         {/* Hambergerbar width logo desktop*/}
         <div className="flex items-center gap-1 w-full justify-center h-[3rem]">
-          <div className="pt-[5px] cursor-pointer hover:scale-105">
+          <div className="cursor-pointer hover:scale-105 flex items-center">
             <FaBars
+              className="mt-1"
               color="#4C49ED"
               onClick={() => setAside(!aside)}
               size={26}
             />
           </div>
           <Link
-            to="/sale-product"
+            to="/"
             className={`text-[2rem] font-bold cursor-pointer ${
               aside ? "hidden" : ""
             }`}
@@ -55,8 +56,8 @@ function Aside() {
         <button
           className={`w-full h-[3rem] flex items-center gap-2 justify-left rounded-md cursor-pointer ${
             aside ? "justify-center" : "pl-7"
-          } ${getActiveButton("/sale-product")}`}
-          onClick={() => handleNavigate("/sale-product")}
+          } ${getActiveButton("/")}`}
+          onClick={() => handleNavigate("/")}
         >
           <div>
             <CiShop size={20} />

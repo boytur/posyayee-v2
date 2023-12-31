@@ -18,6 +18,11 @@ const StoreSettingModel = connection.define('StoreSetting', {
         type: DataTypes.BOOLEAN,
         allowNull:null,
         defaultValue:true
+    },
+    navbar:{
+        type: DataTypes.BOOLEAN,
+        allowNull:true,
+        defaultValue:true
     }
 });
 StoreSettingModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' });
