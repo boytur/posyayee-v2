@@ -1,12 +1,13 @@
 const jwt = require('jsonwebtoken');
 
 const decodeStoreId = (req) => {
-    //get store id from token
-    const token = req.headers.authorization;
-    const tokenWithoutBearer = token.replace("Bearer ", "");
-    const decoded = jwt.decode(tokenWithoutBearer);
+    // get store id from token in cookie
+    const tokenCookies = req.cookies.storeToken;
+    if (!tokenCookies) {
+        return false;
+    }
+    const decoded = jwt.decode(tokenCookies);
     const storeId = decoded.storeId;
-
     return storeId;
 }
 
