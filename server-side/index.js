@@ -12,7 +12,7 @@ const cookieParser = require('cookie-parser')
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 const corsOptions = {
-  origin: '*',
+  origin: 'http://localhost:5173',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 };

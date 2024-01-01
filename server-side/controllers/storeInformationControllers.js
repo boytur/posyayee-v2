@@ -181,6 +181,7 @@ app.post('/api/store/login-store', async (req, res) => {
             return res.status(200).send({
                 success: true,
                 msg: `ล็อกอินสำเร็จค่ะ ${findUserStoreWithEmail[0].storeName}`,
+                storeName: `${findUserStoreWithEmail[0].storeName}`
             });
         }
         //if not found email
@@ -198,6 +199,40 @@ app.post('/api/store/login-store', async (req, res) => {
             msg: "มีบางอย่างผิดพลาดกรุณาลองใหม่หรือติดต่อโพสยาหยี!"
         });
     }
+});
+
+/* check logged in
+   เช็คว่ายังล็อกอินอยู่หรือเปล่า
+*/
+app.get('/api/store/logedin', auth.isLogedin,async (req, res) => {
+    try {
+        const storeId = decodeStoreId(req);
+        if (!storeId) {
+            return res.status(401).send({
+                success: false,
+            })
+        }
+        const findStore = await StoreInformationModel.findAll({
+            where: {
+                storeId: storeId
+            }
+        });
+        res.status(200).send({
+            success: true,
+            storeName: findStore[0].storeName
+        });
+    }
+    catch (err) {
+        console.log("Err", err)
+    }
+});
+
+/* log out
+   ล็อกเอ้าท์ออกจากระบบ
+*/
+app.get("/api/store/logout", async (req, res) => {
+    res.clearCookie('storeToken');
+    res.status(200).send('Logout successful');
 });
 
 /* View saler 
@@ -239,6 +274,6 @@ app.get('/api/store/view-employee', auth.isLogedin, async (req, res) => {
    ล็อกอินเข้าเป็นพนักงานขายในร้านเพื่อขายสินค้า
 */
 app.post('/api/store/login-employee', async (req, res) => {
-    
+
 });
 module.exports = app;
