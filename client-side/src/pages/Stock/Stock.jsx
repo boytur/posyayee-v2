@@ -2,6 +2,7 @@ import Aside from "../../components/Aside/Aside"
 import Navbar from "../../components/Navbar/Navbar"
 
 function Stock() {
+  document.title = "POSYAYEE 📦 ดูสต็อกสินค้า"
   return (
     <div className=" w-full h-[100vh]">
     <div className="w-full absolute">
