@@ -1,14 +1,11 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.css";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { auth } from "../../services/Authorize";
-
-const isLogedIn = sessionStorage.getItem("isLogedIn");
+import { useAuth } from "../../contexts/AuthProvider";
+import "../../components/Loading/btnLoading.css";
 
 function Login() {
   document.title = "POSYAYEE 🔐 Login";
@@ -17,7 +14,9 @@ function Login() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const { loginStore } = useAuth();
+
   // Payload
   const [payLoad, setPayLoad] = useState({
     storeOwnEmail: "",
@@ -25,10 +24,10 @@ function Login() {
   });
 
   // Submit req login
-  const API = import.meta.env.VITE_API_KEY;
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate data
+    setLoading(true);
+
     if (!payLoad.storeOwnEmail.trim() || !payLoad.storeOwnPassword.trim()) {
       Swal.fire({
         title: "กรุณากรอกข้อมูลให้ครบถ้วนค่ะ!",
@@ -36,35 +35,43 @@ function Login() {
         icon: "question",
       });
     } else {
-      // Send req to server
       try {
-        await axios
-          .post(`${API}/api/store/login-store`, payLoad)
-          .then((res) => {
-            // Login success
-            auth(res.data, () => {
-              if (res.data.data[0].newStore) {
-                navigate("/new-store");
-                window.location.reload(false);
-              } else {
-                navigate("/choose-seller");
-                window.location.reload(false);
-              }
-            });
-          });
-        // Login fail
-      } catch (err) {
+        await loginStore(payLoad);
         Swal.fire({
-          title: err.response.data.msg,
-          icon: "error",
-          timer: 5000,
+          title: "เข้าสู่ระบบสำเร็จ",
+          icon: "success",
+          timer: 2000,
         });
+      } catch (err) {
+        if (err) {
+          Swal.fire({
+            title: err.response?.data?.msg || "เกิดข้อผิดพลาด",
+            icon: "error",
+            timer: 5000,
+          });
+        }
+      } finally {
+        setLoading(false);
       }
     }
   };
 
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn")
+  );
+
+  useEffect(() => {
+    setIsLoggedIn(localStorage.getItem("isLoggedIn"));
+    console.log(isLoggedIn);
+  }, [isLoggedIn]);
+  console.log(isLoggedIn);
+
   return (
-    <div className={`login-background ${isLogedIn !== null ? "hidden": ""}`}>
+    <div
+      className={`login-background justify-center items-center ${
+        isLoggedIn === "true" ? "hidden" : "flex"
+      }`}
+    >
       <form
         onSubmit={(e) => handleSubmit(e)}
         className="md:w-[370px] md:h-[500px] w-full h-full bg-white md:rounded-md flex-col z-50"
@@ -122,13 +129,16 @@ function Login() {
             </span>
           </div>
         </div>
-        <div className="w-full md:px-6 px-3 mb-6 mt-[40px]">
-          <button
-            className="appearance-none block h-[52px] w-full bg-[#4C49ED] cursor-pointer text-white border rounded py-3 px-2 mb-3 leading-tight hover.bg-[#4c49edd6] hover.border-2 hover.border-[#4c49ed81]"
-            type="submit"
-          >
-            เข้าสู่ระบบ
-          </button>
+        <div className="w-full md:px-6 px-3 mb-6 mt-[40px] relative">
+          <div>
+            <span className={`loader ${loading ? "" : "hidden"}`}></span>
+            <button
+              className="appearance-none block h-[52px] w-full bg-[#4C49ED] hover:bg-[#4c49edf0] cursor-pointer text-white border rounded py-3 px-2 mb-3 leading-tight hover.bg-[#4c49edd6] hover.border-2 hover.border-[#4c49ed81]"
+              type="submit"
+            >
+              เข้าสู่ระบบ
+            </button>
+          </div>
           <div className="flex mt-5 ml-[1px] text-right justify-end">
             <div className=" underline text-[#4C49ED] text-sm">
               <a href="" className=" cursor-pointer">

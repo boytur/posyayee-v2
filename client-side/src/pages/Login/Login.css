@@ -2,9 +2,6 @@
     width: 100%;
     height: 100vh;
     background: linear-gradient(290deg, #4C49ED 7.45%, #FC62FF 129.66%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
     transition: background 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
