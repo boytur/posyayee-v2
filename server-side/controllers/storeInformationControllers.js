@@ -165,7 +165,7 @@ app.post('/api/store/login-store', async (req, res) => {
             //send jwt to user
             const storeToken = jwt.sign({ storeId: findUserStoreWithEmail[0].storeId },
                 process.env.JWT_SECRET,
-                { expiresIn: '1d' });
+                { expiresIn: '30d' });
 
             // Calculate the expiration date for 30 days from now
             const expirationDate = new Date();
@@ -204,7 +204,7 @@ app.post('/api/store/login-store', async (req, res) => {
 /* check logged in
    เช็คว่ายังล็อกอินอยู่หรือเปล่า
 */
-app.get('/api/store/logedin', auth.isLogedin,async (req, res) => {
+app.get('/api/store/logedin', auth.isLogedin, async (req, res) => {
     try {
         const storeId = decodeStoreId(req);
         if (!storeId) {
@@ -273,7 +273,69 @@ app.get('/api/store/view-employee', auth.isLogedin, async (req, res) => {
 /* log in to employee sale service
    ล็อกอินเข้าเป็นพนักงานขายในร้านเพื่อขายสินค้า
 */
-app.post('/api/store/login-employee', async (req, res) => {
+app.post('/api/store/login-employee', auth.isLogedin, async (req, res) => {
+    try {
+        const storeId = decodeStoreId(req);
+        const { userStoreName, userStorePassword } = req.body;
 
+        //valiate data
+        switch (true) {
+            case !userStoreName || !userStorePassword:
+                return res.status(400).send({
+                    success: false,
+                    msg: "กรุณากรอกข้อมูลให้ครบถ้วนค่ะ!"
+                });
+            case !storeId:
+                return res.status(404).send({
+                    success: false,
+                    msg: "คุกกี้ไม่ถูกต้องค่ะ!"
+                });
+
+        }
+
+        const findUserStore = await UserStoreModel.findOne({
+            where: {
+                StoreInformation_storeId: storeId
+            }
+        });
+
+        const passMatch = findUserStore.userStorePassword === userStorePassword
+            && findUserStore.userStoreName === userStoreName;
+
+        if (passMatch) {
+            //send jwt to user
+            const userToken = jwt.sign({
+                storeId: findUserStore.StoreInformation_storeId,
+                userStoreId: findUserStore.userStoreId,
+                userStoreName: findUserStore.userStoreName
+            },
+                process.env.JWT_SECRET,
+                { expiresIn: '30d' });
+
+            // Calculate the expiration date for 30 days from now
+            const expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 30);
+
+            res.cookie('userToken', userToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
+                secure: true,
+                httpOnly: true,
+                sameSite: 'None',
+                expires: expirationDate
+            });
+
+            return res.status(200).send({
+                success: true,
+                msg: `สวัสดีค่ะ ${findUserStore.userStoreName}`
+            });
+        }
+        res.status(401).send({
+            success: false,
+            msg: 'รหัสผ่านไม่ถูกต้องค่ะ!'
+        });
+    }
+    catch (err) {
+        console.log("Error: ", err)
+    }
 });
 module.exports = app;
