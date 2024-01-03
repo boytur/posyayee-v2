@@ -163,9 +163,13 @@ app.post('/api/store/login-store', async (req, res) => {
                 });
             }
             //send jwt to user
-            const storeToken = jwt.sign({ storeId: findUserStoreWithEmail[0].storeId },
-                process.env.JWT_SECRET,
-                { expiresIn: '30d' });
+            const storeToken = jwt.sign
+                ({
+                    storeId: findUserStoreWithEmail[0].storeId,
+                    storeName: findUserStoreWithEmail[0].storeName
+                },
+                    process.env.JWT_SECRET,
+                    { expiresIn: '30d' });
 
             // Calculate the expiration date for 30 days from now
             const expirationDate = new Date();
@@ -204,26 +208,24 @@ app.post('/api/store/login-store', async (req, res) => {
 /* check logged in
    เช็คว่ายังล็อกอินอยู่หรือเปล่า
 */
+const decodeStoreName = require('../middleware/decodeStoreName');
 app.get('/api/store/logedin', auth.isLogedin, async (req, res) => {
     try {
         const storeId = decodeStoreId(req);
+        const storeName = decodeStoreName(req);
         if (!storeId) {
             return res.status(401).send({
                 success: false,
-            })
+            });
         }
-        const findStore = await StoreInformationModel.findAll({
-            where: {
-                storeId: storeId
-            }
-        });
+
         res.status(200).send({
             success: true,
-            storeName: findStore[0].storeName
+            storeName: storeName
         });
     }
     catch (err) {
-        console.log("Err", err)
+        console.log("Err", err);
     }
 });
 
