@@ -338,4 +338,39 @@ app.post('/api/store/login-employee', auth.isLogedin, async (req, res) => {
         console.log("Error: ", err)
     }
 });
+
+/* check user logged in
+   เช็คว่าร้านค้านี้มีคนขายเข้ามายัง
+*/
+const decodeUserStore = require('../middleware/decodeUserStore');
+app.post('/api/store/logedin-employee', auth.isLogedin, async (req, res) => {
+    try {
+        const userDetail = decodeUserStore(req);
+        if (!userDetail) {
+            return res.status(404).send({
+                success: false,
+                msg: "คุกกี้ไม่ถูกต้องค่ะ!"
+            });
+        }
+        return res.status(200).send({
+            msg: 'success',
+            userStoreName: userDetail?.userStoreName
+        });
+    }
+    catch (err) {
+        console.log("Error: ", err);
+    }
+});
+
+/* logout employee
+   ล็อกเอ้าท์คนขายออกจากระบบ
+*/
+app.post('/api/store/logout-employee', async (req, res) => {
+    res.clearCookie('userToken');
+    res.status(200).send({
+        success: true,
+        msg: 'Logged out employee successfully!'
+    });
+});
+
 module.exports = app;
