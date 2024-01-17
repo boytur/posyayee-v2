@@ -6,7 +6,15 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan')
 const auth = require("./authentication/authen");
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+
+const StoreModel = require('./models/StoreModel');
+const UserModel = require('./models/UserModel');
+const ProductModel = require('./models/ProductModel');
+const CreditModel = require('./models/CreditModel');
+const ProductTypeModel = require('./models/ProductTypeModel');
+const SoldHistorieModel = require('./models/SoldHistorieModel');
+const SettingModel = require('./models/SettingModel');
 
 //midleware configuration
 app.use(morgan('dev'));
@@ -31,10 +39,10 @@ app.get('/', auth.isLogedin, async (req, res) => {
   })
 });
 
-const PackageController = require('./controllers/packageController');
-const StoreInformationController = require('./controllers/storeInformationControllers');
-app.use(PackageController);
-app.use(StoreInformationController);
+// const PackageController = require('./controllers/packageController');
+// const StoreInformationController = require('./controllers/storeInformationControllers');
+// app.use(PackageController);
+// app.use(StoreInformationController);
 
 app.listen(port, () => {
   console.log(`POSYAYEE-V2 app listening on port ${port}`)

@@ -2,27 +2,31 @@ const connection = require('../connections/connect');
 const { DataTypes } = require('sequelize');
 const SoldHistorieModel = require('./SoldHistorieModel');
 
-const SoldDetailModel = connection.define('SoldDetail', {
-    soldDetailId: {
+const SoldDetailModel = connection.define('tb_details', {
+    detail_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
     },
-    productIdSold: {
+    detail_prodid: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    quantitySold: {
+    detail_prodname: {
+        type: DataTypes.STRING(225),
+        allowNull: false
+    },
+    detail_quatity: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    ownSoldName: {
+    detail_owner: {
         type: DataTypes.STRING(225),
         allowNull: false
     }
 });
-SoldDetailModel.belongsTo(SoldHistorieModel, { foreignKey: 'SoldHistorie_soldId' });
+SoldDetailModel.belongsTo(SoldHistorieModel, { foreignKey: 'sold_id' });
 
 SoldDetailModel.sync({ alter: true });
 module.exports = SoldDetailModel;

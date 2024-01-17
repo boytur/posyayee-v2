@@ -1,20 +1,20 @@
 const connection = require('../connections/connect');
 const { DataTypes } = require('sequelize');
-const StoreInformationModel = require('./StoreInformationModel');
+const StoreModel = require('./StoreModel');
 
-const SoldHistorieModel = connection.define('SoldHistorie', {
-    soldId: {
+const SoldHistorieModel = connection.define('tb_soldhis', {
+    sold_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
     },
-    soldAmountToday: {
+    sold_today: {
         type: DataTypes.INTEGER,
         allowNull: false
     }
 })
-SoldHistorieModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' });
+SoldHistorieModel.belongsTo(StoreModel, { foreignKey: 'store_id' });
 
 SoldHistorieModel.sync({ alter: true });
 module.exports = SoldHistorieModel;

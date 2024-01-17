@@ -1,49 +1,49 @@
 const connection = require('../connections/connect');
 const { DataTypes } = require('sequelize');
-const StoreInformationModel = require('./StoreInformationModel');
+const StoreModel = require('./StoreModel');
 
-const ProductModel = connection.define('Product', {
-    productId: {
+const ProductModel = connection.define('tb_products', {
+    prod_id: {
         type: DataTypes.BIGINT,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
     },
-    productBarcode: {
+    prod_barcode: {
         type: DataTypes.STRING(20),
         allowNull: true,
     },
-    productName: {
+    prod_name: {
         type: DataTypes.STRING(225),
         allowNull: false,
     },
-    productSalePrice: {
+    prod_cost: {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
-    productCostPrice:{
+    prod_sale:{
         type: DataTypes.FLOAT,
         allowNull:false
     },
-    productQuantity: {
+    prod_quantity: {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
-    productImagePath: {
+    prod_image: {
         type: DataTypes.STRING(225),
         allowNull: true,
     },
-    productType: {
+    prod_type: {
         type: DataTypes.STRING(225),
         allowNull: true,
         defaultValue: "ทั่วไป"
     },
-    productExpDate:{
+    prod_exp:{
         type: DataTypes.DATE,
         allowNull: true,
     }
 });
-ProductModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' })
+ProductModel.belongsTo(StoreModel, { foreignKey: 'store_id' })
 
 ProductModel.sync({ alter: true });
 module.exports = ProductModel;
