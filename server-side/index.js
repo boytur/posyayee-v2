@@ -39,9 +39,9 @@ app.get('/', auth.isLogedin, async (req, res) => {
   })
 });
 
-// const PackageController = require('./controllers/packageController');
+const PackageController = require('./controllers/packageController');
 // const StoreInformationController = require('./controllers/storeInformationControllers');
-// app.use(PackageController);
+app.use(PackageController);
 // app.use(StoreInformationController);
 
 app.listen(port, () => {
