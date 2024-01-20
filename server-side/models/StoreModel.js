@@ -37,6 +37,6 @@ const StoreModel = connection.define('tb_stores', {
         defaultValue:true
     }
 });
-StoreModel.belongsTo(PackageModel, { foreignKey: 'pack_id' });
+StoreModel.belongsTo(PackageModel, { foreignKey: 'package_id' });
 StoreModel.sync({ alter: true });
 module.exports = StoreModel;
