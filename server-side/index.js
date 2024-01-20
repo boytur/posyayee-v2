@@ -44,6 +44,10 @@ const PackageController = require('./controllers/packageController');
 app.use(PackageController);
 // app.use(StoreInformationController);
 
+const register = require("./authentication/Register");
+const login = require("./authentication/Login");
+app.use(register,login);
+
 app.listen(port, () => {
   console.log(`POSYAYEE-V2 app listening on port ${port}`)
 });
