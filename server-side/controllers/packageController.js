@@ -5,9 +5,9 @@ const PackageModel = require('../models/PackageModel');
 //Add new packages
 app.post('/api/package/add-package', async (req, res) => {
     try {
-        const { pack_price, pack_name } = req.body;
+        const { package_price, package_name } = req.body;
         switch (true) {
-            case pack_price != 0 && !pack_price || !pack_name:
+            case package_price != 0 && !package_price || !package_name:
                 res.status(500).send({ msg: "กรุณาใส่ข้อมูลให้ครบถ้วนค่ะ!" });
                 return;
         }
