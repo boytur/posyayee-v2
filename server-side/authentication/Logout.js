@@ -1,5 +1,5 @@
 /*
-    @Login into store
+    @Logout into store
 */
 
 const express = require('express');
