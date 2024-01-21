@@ -47,7 +47,8 @@ app.use(PackageController);
 const register = require("./authentication/Register");
 const login = require("./authentication/Login");
 const logout = require("./authentication/Logout");
-app.use(register,login,logout);
+const refresh = require("./authentication/Refresh");
+app.use(register,login,logout,refresh);
 
 app.listen(port, () => {
   console.log(`POSYAYEE-V2 app listening on port ${port}`)

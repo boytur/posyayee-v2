@@ -1,7 +1,7 @@
 module.exports = {
     isLogedin: (req, res, next) => {
         const jwt = require('jsonwebtoken');
-        const token = req.cookies.storeToken;
+        const token = req.cookies.token;
         //console.log(token)
         if (!token) {
             return res.status(401).send(

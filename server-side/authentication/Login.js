@@ -8,6 +8,7 @@ const UserModel = require('../models/UserModel');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const StoreModel = require('../models/StoreModel');
 
 app.post('/api/v1/login', async (req, res) => {
     const { user_email, user_password } = req.body;
@@ -20,7 +21,7 @@ app.post('/api/v1/login', async (req, res) => {
                     msg: "กรุณากรอกข้อมูลให้ครบถ้วนค่ะ!"
                 });
         }
-        
+
         //find user email
         const user = await UserModel.findAll({
             where: {
@@ -41,17 +42,42 @@ app.post('/api/v1/login', async (req, res) => {
                     msg: 'รหัสผ่านไม่ถูกต้องค่ะ!'
                 });
             }
+
+            const store = await StoreModel.findAll({
+                where: {
+                    store_id: user[0].store_id
+                },
+                attributes: ['store_id','store_name', 'store_address', 'store_phone', 'store_taxid', 'store_remaining', 'store_active']
+            })
             //send jwt to user
             const token = jwt.sign
                 ({
-                    store_id: user[0].store_id,
+                    store: store,
+                    user: [{
+                        user_id: user[0].user_id,
+                        user_role: user[0].user_role,
+                        user_fname: user[0].user_fname,
+                        user_lname: user[0].user_lname,
+                        user_image: user[0].user_image
+                    }
+                    ]
+                },
+                    process.env.JWT_SECRET,
+                    { expiresIn: '30d' });
+
+            const refreshToken = jwt.sign({
+                store: store,
+                user: [{
+                    user_id: user[0].user_id,
                     user_role: user[0].user_role,
                     user_fname: user[0].user_fname,
                     user_lname: user[0].user_lname,
                     user_image: user[0].user_image
-                },
-                    process.env.JWT_SECRET,
-                    { expiresIn: '1d' });
+                }
+                ]
+            },
+                process.env.JWT_SECRET,
+                { expiresIn: '1d' });
 
             // Calculate the expiration date for 30 days from now
             const expirationDate = new Date();
@@ -66,7 +92,16 @@ app.post('/api/v1/login', async (req, res) => {
 
             return res.status(200).send({
                 success: true,
-                msg: `ล็อกอินสำเร็จค่ะ`
+                msg: `ล็อกอินสำเร็จค่ะ ${store[0].store_name}!`,
+                store: store,
+                user: [{
+                    user_role: user[0].user_role,
+                    user_fname: user[0].user_fname,
+                    user_lname: user[0].user_lname,
+                    user_image: user[0].user_image
+                }
+                ],
+                refreshToken: refreshToken
             });
         }
         //if not found email
