@@ -18,55 +18,6 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const uploadToB2 = require('../middleware/uploadB2');
 
-/*sign up a new store
-  สมัครร้านค้าใหม่
-*/
-app.post('/api/store/signup-store', async (req, res) => {
-    const { Package_packageId, storeName, storeOwnEmail, storeOwnPassword } = req.body;
-    try {
-        // Validate data
-        if (!Package_packageId || !storeName || !storeOwnEmail || !storeOwnPassword) {
-            return res.status(400).json({
-                success: false,
-                msg: "กรุณากรอกข้อมูลให้ครบถ้วน!"
-            });
-        }
-
-        // Check for existing store
-        const existingEmail = await StoreInformationModel.findAll({
-            where: {
-                storeOwnEmail: storeOwnEmail
-            }
-        });
-        if (existingEmail.length !== 0) {
-            return res.status(409).json({
-                success: false,
-                msg: "อีเมลนี้ถูกใช้แล้วค่ะ!"
-            });
-        }
-
-        // Hash the password
-        const hash = await hashAsync(storeOwnPassword, saltRounds);
-
-        const newUser = {
-            storeName,
-            storeOwnEmail,
-            storeOwnPassword: hash,
-            Package_packageId
-        };
-
-        const result = await StoreInformationModel.create(newUser);
-        return res.status(201).json({
-            success: true,
-            msg: "ลงทะเบียนร้านค้าเรียบร้อยค่ะ!",
-            result
-        });
-    } catch (err) {
-        console.error('Error: ', err);
-        return res.status(500).json({ msg: err.message });
-    }
-});
-
 /* sign up a new user in store 
    เพิ่มคนขายในร้าน
 */

@@ -7,21 +7,51 @@ import { IoAnalyticsSharp } from "react-icons/io5";
 import { MdOutlineHistoryToggleOff } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
+import { jwtDecode } from "../../services/jwtDecode";
+
+const menuData = [
+  {
+    title: "ขายของหน้าร้าน",
+    path: "/sale-product",
+    icon: <CiShop size={20} />,
+  },
+  {
+    title: "ดูสต็อกสินค้า",
+    path: "/view-stock",
+    icon: <PiDatabase size={20} />,
+  },
+  {
+    title: "เพิ่มสต็อกสินค้า",
+    path: "/add-product",
+    icon: <IoMdAddCircleOutline size={20} />,
+  },
+  {
+    title: "วิเคราะห์ยอดขาย",
+    path: "/analysis",
+    icon: <IoAnalyticsSharp size={20} />,
+  },
+  {
+    title: "ประวัติการขาย",
+    path: "/history",
+    icon: <MdOutlineHistoryToggleOff size={20} />,
+  },
+];
 
 function Aside() {
-  const [aside, setAside] = useState(false);
+  const [aside, setAside] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // กำหนดปุ่มที่เป็น "active" ตามเส้นทางปัจจุบัน
   const getActiveButton = (route) => {
     return location.pathname === route ? "bg-[#E4E3FF] text-[#4C49ED]" : "";
   };
 
-  // ฟังก์ชันสำหรับการนำทางไปยังเส้นทางอื่น ๆ
   const handleNavigate = (route) => {
     navigate(route);
   };
+
+  const user = jwtDecode(localStorage.getItem("refreshToken"));
+  const isOwner = user?.user[0]?.user_role === "owner";
 
   return (
     <div
@@ -30,7 +60,6 @@ function Aside() {
       }`}
     >
       <div className="flex justify-center">
-        {/* Hambergerbar width logo desktop*/}
         <div className="flex items-center gap-1 w-full justify-center h-[3rem]">
           <div className="cursor-pointer hover:scale-105 flex items-center">
             <FaBars
@@ -51,84 +80,32 @@ function Aside() {
         </div>
       </div>
       <div className="w-full justify-center flex flex-col pt-10 text-[#494a4d]">
-        {/* Aside content */}
-        {/* Sale */}
-        <button
-          className={`w-full h-[3rem] flex items-center gap-2 justify-left rounded-md cursor-pointer ${
-            aside ? "justify-center" : "pl-7"
-          } ${getActiveButton("/")}`}
-          onClick={() => handleNavigate("/")}
-        >
-          <div>
-            <CiShop size={20} />
-          </div>
-          <div className={`text-sm items-center flex ${aside ? "hidden" : ""}`}>
-            <p>ขายของหน้าร้าน</p>
-          </div>
-        </button>
-
-        {/* view stock */}
-        <button
-          className={`w-full h-[3rem] flex items-center gap-2 justify-left  rounded-md cursor-pointer ${
-            aside ? "justify-center" : "pl-7"
-          } ${getActiveButton("/view-stock")}`}
-          onClick={() => handleNavigate("/view-stock")}
-        >
-          <div>
-            <PiDatabase size={20} />
-          </div>
-          <div className={`text-sm items-center flex ${aside ? "hidden" : ""}`}>
-            <p>ดูสต็อกสินค้า</p>
-          </div>
-        </button>
-
-        {/* add product */}
-        <button
-          className={`w-full h-[3rem] flex items-center gap-2 justify-left rounded-md cursor-pointer ${
-            aside ? "justify-center" : "pl-7"
-          } ${getActiveButton("/add-product")}`}
-          onClick={() => handleNavigate("/add-product")}
-        >
-          <div>
-            <IoMdAddCircleOutline size={20} />
-          </div>
-          <div className={`text-sm items-center flex ${aside ? "hidden" : ""}`}>
-            <p>เพิ่มสต็อกสินค้า</p>
-          </div>
-        </button>
-
-        {/* analysis */}
-        <button
-          className={`w-full h-[3rem] flex items-center gap-2 justify-left rounded-md cursor-pointer ${
-            aside ? "justify-center" : "pl-7"
-          } ${getActiveButton("/analysis")}`}
-          onClick={() => handleNavigate("/analysis")}
-        >
-          <div>
-            <IoAnalyticsSharp size={20} />
-          </div>
-          <div className={`text-sm items-center flex ${aside ? "hidden" : ""}`}>
-            <p>วิเคราะห์ยอดขาย</p>
-          </div>
-        </button>
-
-        {/* history */}
-        <button
-          className={`w-full h-[3rem] flex items-center gap-2 justify-left rounded-md cursor-pointer ${
-            aside ? "justify-center" : "pl-7"
-          } ${getActiveButton("/history")}`}
-          onClick={() => handleNavigate("/history")}
-        >
-          <div>
-            <MdOutlineHistoryToggleOff size={20} />
-          </div>
-          <div className={`text-sm items-center flex ${aside ? "hidden" : ""}`}>
-            <p>ประวัติการขาย</p>
-          </div>
-        </button>
+        {menuData.map(
+          (item) =>
+            (isOwner ||
+              item.path === "/sale-product" ||
+              item.path === "/view-stock" ||
+              item.path === "/add-product") && (
+              <button
+                key={item.path}
+                className={`w-full h-[3rem] flex items-center gap-2 justify-left rounded-md cursor-pointer ${
+                  aside ? "justify-center" : "pl-7"
+                } ${getActiveButton(item.path)}`}
+                onClick={() => handleNavigate(item.path)}
+              >
+                <div>{item.icon}</div>
+                <div
+                  className={`text-sm items-center flex ${
+                    aside ? "hidden" : ""
+                  }`}
+                >
+                  <p>{item.title}</p>
+                </div>
+              </button>
+            )
+        )}
       </div>
     </div>
   );
 }
-
 export default Aside;

@@ -1,5 +1,3 @@
-// App.jsx
-import { useAuth } from "./contexts/AuthProvider";
 import Login from "./pages/Login/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sale from "./pages/Sale/Sale.jsx";
@@ -7,25 +5,29 @@ import Stock from "./pages/Stock/Stock";
 import AddStock from "./pages/AddStock/AddStock";
 import Analysis from "./pages/Analysis/Analysis";
 import History from "./pages/History/History";
+import { jwtDecode } from "./services/jwtDecode.js";
+import { getLocalStorage } from "./services/storage.js";
 
 function App() {
-  const { storeName } = useAuth();
+
+  const  user = jwtDecode(getLocalStorage("refreshToken"));
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={storeName ? <Sale /> : <Login />} />
-        <Route path="/view-stock" element={storeName ? <Stock /> : <Login />} />
+        <Route path="/sale-product" element={user ? <Sale /> : <Login />} />
+        <Route path="/view-stock" element={user ? <Stock /> : <Login />} />
         <Route
           path="/add-product"
-          element={storeName ? <AddStock /> : <Login />}
+          element={user ? <AddStock /> : <Login />}
         />
         <Route
           path="/analysis"
-          element={storeName ? <Analysis /> : <Login />}
+          element={user ? <Analysis /> : <Login />}
         />
-        <Route path="/history" element={storeName ? <History /> : <Login />} />
-        <Route path="/login" element={storeName ? <Login /> : <Login />} />
+        <Route path="/history" element={user ? <History /> : <Login />} />
+        <Route path="/login" element={user ? <Login /> : <Login />} />
+        
       </Routes>
     </BrowserRouter>
   );

@@ -6,8 +6,10 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useAuth } from "../../contexts/AuthProvider";
 import "../../components/Loading/btnLoading.css";
-import RefreshLoading from "../../components/RefreshLoading/RefreshLoading";
+//import RefreshLoading from "../../components/RefreshLoading/RefreshLoading";
 import { useNavigate } from "react-router";
+import { jwtDecode } from "../../services/jwtDecode";
+import { getLocalStorage } from "../../services/storage";
 
 function Login() {
   document.title = "POSYAYEE 🔐 Login";
@@ -17,12 +19,12 @@ function Login() {
   };
 
   const [loading, setLoading] = useState(false);
-  const { loginStore, storeName } = useAuth();
+  const { login } = useAuth();
 
   // Payload
   const [payLoad, setPayLoad] = useState({
-    storeOwnEmail: "",
-    storeOwnPassword: "",
+    user_email: "",
+    user_password: "",
   });
 
   // Submit req login
@@ -30,7 +32,7 @@ function Login() {
     e.preventDefault();
     setLoading(true);
 
-    if (!payLoad.storeOwnEmail.trim() || !payLoad.storeOwnPassword.trim()) {
+    if (!payLoad.user_email.trim() || !payLoad.user_password.trim()) {
       Swal.fire({
         title: "กรุณากรอกข้อมูลให้ครบถ้วนค่ะ!",
         text: "อีเมลหรือรหัสผ่านยังไม่ได้กรอกค่ะ",
@@ -38,12 +40,8 @@ function Login() {
       });
     } else {
       try {
-        await loginStore(payLoad);
-        Swal.fire({
-          title: "เข้าสู่ระบบสำเร็จ",
-          icon: "success",
-          timer: 2000,
-        });
+        await login(payLoad);
+        
       } catch (err) {
         if (err) {
           Swal.fire({
@@ -58,29 +56,20 @@ function Login() {
     }
   };
 
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem("isLoggedIn")
-  );
-
-  useEffect(() => {
-    setIsLoggedIn(localStorage.getItem("isLoggedIn"));
-  }, [isLoggedIn]);
-
   const navigate = useNavigate();
-
-  if (storeName) {
-    navigate("/");
-  }
+  const refreshToken = getLocalStorage('refreshToken')
+  const  user = jwtDecode(refreshToken);
+  useEffect(() => {
+    if (user) {
+      navigate("/sale-product");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[navigate])
 
   return (
     <>
-      <div className={`${isLoggedIn === "true" ? "block" : "hidden"}`}>
-        <RefreshLoading />
-      </div>
       <div
-        className={`login-background justify-center items-center ${
-          isLoggedIn === "true" ? "hidden" : "flex"
-        }`}
+        className={`login-background justify-center items-center flex`}
       >
         <form
           onSubmit={(e) => handleSubmit(e)}
@@ -109,7 +98,7 @@ function Login() {
               placeholder="example@gmail.com"
               required
               onChange={(e) =>
-                setPayLoad({ ...payLoad, storeOwnEmail: e.target.value })
+                setPayLoad({ ...payLoad, user_email: e.target.value })
               }
             />
           </div>
@@ -128,7 +117,7 @@ function Login() {
                 placeholder="******************"
                 required
                 onChange={(e) =>
-                  setPayLoad({ ...payLoad, storeOwnPassword: e.target.value })
+                  setPayLoad({ ...payLoad, user_password: e.target.value })
                 }
               />
               <span

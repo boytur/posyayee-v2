@@ -1,54 +1,52 @@
 /* eslint-disable react/prop-types */
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from "react";
+import { createContext, useContext, useMemo, useState,useEffect } from "react";
 import instance from "../services/axios";
-
+import { setLocalStorage } from "../services/storage";
 //สร้าง context
 const AuthContext = createContext();
 
 //สร้าง Provider component
 const AuthProvider = ({ children }) => {
   //กำหนด state สำหรับ storeName
-  const [storeName, setStoreName] = useState(null);
-  //ใช้ useEffect เพื่อตรวจสอบสถานะ Authentication
+  const [user, setUser] = useState(null);
+  const [store, setStore] = useState(null);
+
+  // //ใช้ useEffect เพื่อตรวจสอบสถานะ Authentication
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const res = await instance.get("/api/store/logedin");
-        setStoreName(res.data.storeName);
-        localStorage.setItem("isLoggedIn",true);
+        const res = await instance.get("/api/v1/refresh");
+        if(res.status===200){
+          setLocalStorage("refreshToken", res.data.refreshToken);
+        }
       } catch (error) {
-        setStoreName(null);
-        localStorage.setItem("isLoggedIn",false);
-
+        console.error("err",error);
       }
     };
     checkAuthStatus();
   }, []);
 
   //กำหนดฟังก์ชัน loginStore และ logoutStore
-  const loginStore = async (payload) => {
+  const login = async (payload) => {
     try {
-      const res = await instance.post("/api/store/login-store", payload);
-      setStoreName(res.data.storeName);
-      localStorage.setItem("isLoggedIn",true);
+      const res = await instance.post("/api/v1/login", payload);
+      setUser(res.data.user[0]);
+      setStore(res.data.store[0]);
+      setLocalStorage('refreshToken',res.data.refreshToken);
+      window.location.reload();
     } catch (error) {
       console.error("Login failed:", error);
-      setStoreName(null);
-      localStorage.setItem("isLoggedIn",false);
       throw error;
     }
   };
 
-  const logoutStore = async () => {
+  const logout = async () => {
     try {
-      await instance.get("/api/store/logout");
-      setStoreName(null);
+      await instance.delete("/api/v1/logout");
+      setUser();
+      setStore();
+      localStorage.clear();
+      window.location.reload();
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -56,9 +54,9 @@ const AuthProvider = ({ children }) => {
 
   //ใช้ useMemo เพื่อปรับปรุงค่า context เฉพาะเมื่อ storeName เปลี่ยนแปลง
   const contextValue = useMemo(
-    () => ({ storeName, loginStore, logoutStore}),
+    () => ({ user,store, login, logout}),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [storeName]
+    []
   );
 
   //ให้ Provider component ทำหน้าที่ส่งค่า context ไปยัง child components
