@@ -15,7 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/sale-product" element={user ? <Sale /> : <Login />} />
+        <Route path="/" element={user ? <Sale /> : <Login />} />
         <Route path="/view-stock" element={user ? <Stock /> : <Login />} />
         <Route
           path="/add-product"

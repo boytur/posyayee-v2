@@ -59,9 +59,9 @@ function Navbar({ dummyProducts }) {
                     {/* Sale product */}
                     <button
                       className={`p-3 rounded-md ${getActiveButton(
-                        "/sale-product"
+                        "/"
                       )}`}
-                      onClick={() => handleNavigate("/sale-product")}
+                      onClick={() => handleNavigate("/")}
                     >
                       <div className=" flex gap-2 justify-left">
                         <CiShop size={25} />

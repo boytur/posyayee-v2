@@ -12,7 +12,7 @@ import { jwtDecode } from "../../services/jwtDecode";
 const menuData = [
   {
     title: "ขายของหน้าร้าน",
-    path: "/sale-product",
+    path: "/",
     icon: <CiShop size={20} />,
   },
   {
@@ -83,7 +83,7 @@ function Aside() {
         {menuData.map(
           (item) =>
             (isOwner ||
-              item.path === "/sale-product" ||
+              item.path === "/" ||
               item.path === "/view-stock" ||
               item.path === "/add-product") && (
               <button

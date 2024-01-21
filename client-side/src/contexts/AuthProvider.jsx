@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useMemo, useState,useEffect } from "react";
 import instance from "../services/axios";
-import { setLocalStorage } from "../services/storage";
+import { getLocalStorage, setLocalStorage } from "../services/storage";
 //สร้าง context
 const AuthContext = createContext();
 
@@ -15,12 +15,14 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const res = await instance.get("/api/v1/refresh");
-        if(res.status===200){
-          setLocalStorage("refreshToken", res.data.refreshToken);
+        if(getLocalStorage("refreshToken")){
+          const res = await instance.get("/api/v1/refresh");
+          if(res.status===200){
+            setLocalStorage("refreshToken", res.data.refreshToken);
+          }
         }
       } catch (error) {
-        console.error("err",error);
+        return
       }
     };
     checkAuthStatus();
@@ -35,8 +37,7 @@ const AuthProvider = ({ children }) => {
       setLocalStorage('refreshToken',res.data.refreshToken);
       window.location.reload();
     } catch (error) {
-      console.error("Login failed:", error);
-      throw error;
+      return
     }
   };
 
@@ -52,11 +53,10 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  //ใช้ useMemo เพื่อปรับปรุงค่า context เฉพาะเมื่อ storeName เปลี่ยนแปลง
   const contextValue = useMemo(
     () => ({ user,store, login, logout}),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [user]
   );
 
   //ให้ Provider component ทำหน้าที่ส่งค่า context ไปยัง child components

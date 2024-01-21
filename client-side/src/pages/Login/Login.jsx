@@ -61,7 +61,7 @@ function Login() {
   const  user = jwtDecode(refreshToken);
   useEffect(() => {
     if (user) {
-      navigate("/sale-product");
+      navigate("/");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[navigate])
