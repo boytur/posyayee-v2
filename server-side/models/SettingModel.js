@@ -1,30 +1,30 @@
 const connection = require('../connections/connect');
 const { DataTypes } = require('sequelize');
-const StoreInformationModel = require('./StoreInformationModel');
+const StoreModel = require('./StoreModel');
 
-const StoreSettingModel = connection.define('StoreSetting', {
-    settingId: {
+const SettingModel = connection.define('tb_settings', {
+    sett_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
     },
-    outOfStockValue: {
+    sett_outstock: {
         type: DataTypes.INTEGER,
         allowNull: null,
         defaultValue: 5
     },
-    soundOnSale:{
+    sett_sound:{
         type: DataTypes.BOOLEAN,
         allowNull:null,
         defaultValue:true
     },
-    navbar:{
+    sett_navbar:{
         type: DataTypes.BOOLEAN,
         allowNull:true,
         defaultValue:true
     }
 });
-StoreSettingModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' });
-StoreSettingModel.sync({ alter: true });
-module.exports = StoreSettingModel;
+SettingModel.belongsTo(StoreModel, { foreignKey: 'store_id' });
+SettingModel.sync({ alter: true });
+module.exports = SettingModel;

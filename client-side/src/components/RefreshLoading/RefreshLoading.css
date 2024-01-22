@@ -1,0 +1,23 @@
+.refreshLoading {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #4c49ed;
+  box-shadow: 32px 0 #4c49ed, -32px 0 #4c49ed;
+  animation: flash 0.5s ease-out infinite alternate;
+}
+
+@keyframes flash {
+  0% {
+    background-color: #6c6af2ca;
+    box-shadow: 32px 0 #4c49edca, -32px 0 #4c49edca;
+  }
+  50% {
+    background-color: #b4b3fde3;
+    box-shadow: 32px 0 #4c49ede3, -32px 0 #4c49ede3;
+  }
+  100% {
+    background-color: #bcbafb;
+    box-shadow: 32px 0 #bcbafb, -32px 0 #bcbafb;
+  }
+}

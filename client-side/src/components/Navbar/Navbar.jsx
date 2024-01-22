@@ -8,6 +8,9 @@ import { IoAnalyticsSharp } from "react-icons/io5";
 import { MdOutlineHistoryToggleOff } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BsCart } from "react-icons/bs";
+import { jwtDecode } from "../../services/jwtDecode";
+import { getLocalStorage } from "../../services/storage";
+import { useAuth } from "../../contexts/AuthProvider";
 
 function Navbar({ dummyProducts }) {
   //dummyProducts in cart
@@ -23,6 +26,8 @@ function Navbar({ dummyProducts }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const {logout} = useAuth();
+
   // กำหนดปุ่มที่เป็น "active" ตามเส้นทางปัจจุบัน
   const getActiveButton = (route) => {
     return location.pathname === route ? "bg-[#E4E3FF] text-[#4C49ED]" : "";
@@ -33,8 +38,7 @@ function Navbar({ dummyProducts }) {
     navigate(route);
   };
 
-  // const storeName = sessionStorage.getItem("storeName").replace(/"/g, "");
-  // const userStore = sessionStorage.getItem("userStore").replace(/"/g, "");
+  const user = jwtDecode(getLocalStorage("refreshToken"));
 
   return (
     <div className="w-full h-[3.2rem]">
@@ -54,7 +58,9 @@ function Navbar({ dummyProducts }) {
                   <div className="flex flex-col p-2 gap-1">
                     {/* Sale product */}
                     <button
-                      className={`p-3 rounded-md ${getActiveButton("/")}`}
+                      className={`p-3 rounded-md ${getActiveButton(
+                        "/"
+                      )}`}
                       onClick={() => handleNavigate("/")}
                     >
                       <div className=" flex gap-2 justify-left">
@@ -122,13 +128,15 @@ function Navbar({ dummyProducts }) {
                         <div className=" flex gap-2 justify-left font-bold">
                           <img
                             className="rounded-[100%] w-[2rem] h-[2rem] object-cover"
-                            src="https://s.isanook.com/ga/0/ud/222/1112961/popass(1).jpg"
+                            src={user.user[0].user_image}
                             alt=""
                           />
-                          {/* <p>{storeName}</p> */}
+                          <p>{user.store[0].store_name || ""}</p>
                         </div>
                         <div className="w-full justify-end flex">
-                          {/* <p className="text-[12px]">คนขาย: {userStore}</p> */}
+                          {user.user[0].user_fname +
+                            " " +
+                            user.user[0].user_lname || ""}
                         </div>
                       </div>
                     </button>
@@ -142,17 +150,19 @@ function Navbar({ dummyProducts }) {
         <div className="w-full h-full flex justify-end gap-3 text-[#33363F]">
           <div className=" md:flex md:flex-col h-full md:pt-1 pt-3 hidden">
             <p className="md:text-[1rem] font-bold text-[10px]">
-              {/* สวัสดี, {storeName} */}
+              {user.store[0].store_name || ""}
             </p>
             <p className="md:text-[.7rem] text-[8px] flex justify-end">
-              {/* <span className=" font-bold">คนขาย: </span>{userStore} */}
+              <span className=" font-bold">คนขาย: </span>
+              {user.user[0].user_fname + " " + user.user[0].user_lname || ""}
             </p>
           </div>
           <div className="pr-3 items-center md:flex h-[3.2rem] cursor-pointer hidden">
             <img
               className="rounded-[100%] w-[2.5rem] h-[2.5rem] object-cover"
-              src="https://s.isanook.com/ga/0/ud/222/1112961/popass(1).jpg"
+              src={user.user[0].user_image}
               alt=""
+              onClick={()=> logout()}
             />
           </div>
           {/*Total product in cart */}

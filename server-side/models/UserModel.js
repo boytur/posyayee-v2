@@ -1,33 +1,41 @@
 const connection = require('../connections/connect');
 const { DataTypes } = require('sequelize');
-const StoreInformationModel = require('./StoreInformationModel');
+const StoreModel = require('./StoreModel');
 
-const UserStoreModel = connection.define('UserStore', {
-    userStoreId: {
+const UserModel = connection.define('tb_users', {
+    user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
     },
-    userStoreName: {
+    user_fname: {
         type: DataTypes.STRING(225),
         allowNull: false
     },
-    userStorePassword: {
+    user_lname: {
         type: DataTypes.STRING(225),
         allowNull: false
     },
-    userStoreImagePath: {
+    user_email: {
+        type: DataTypes.STRING(225),
+        allowNull: false
+    },
+    user_password: {
+        type: DataTypes.STRING(225),
+        allowNull: false
+    },
+    user_image: {
         type: DataTypes.STRING(225),
         allowNull: true
     },
-    userStoreRole: {
+    user_role: {
         type: DataTypes.STRING(225),
         allowNull: false
     }
 });
 
-UserStoreModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' });
+UserModel.belongsTo(StoreModel, { foreignKey: 'store_id' });
 
-UserStoreModel.sync({ alter: true });
-module.exports = UserStoreModel;
+UserModel.sync({ alter: true });
+module.exports = UserModel;

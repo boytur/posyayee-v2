@@ -1,27 +1,32 @@
 const connection = require('../connections/connect');
 const { DataTypes } = require('sequelize');
-const StoreInformationModel = require('./StoreInformationModel');
-const UserCreditModel = connection.define('UserCredit', {
-    userCreditId: {
+const StoreModel = require('./StoreModel');
+const CreditModel = connection.define('tb_credit', {
+    credit_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
     },
-    userCreditName: {
+    credit_fname: {
         type: DataTypes.STRING(225),
         allowNull: false
     },
-    userCreditAmount: {
+    credit_lname: {
+        type: DataTypes.STRING(225),
+        allowNull: false
+    },
+    credit_amount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
     },
-    userCreditPhone:{
+    credit_phone: {
         type: DataTypes.INTEGER,
-        allowNull:false,
+        allowNull: false,
     }
 });
-UserCreditModel.belongsTo(StoreInformationModel, { foreignKey: 'StoreInformation_storeId' });
-UserCreditModel.sync({ alter: true });
-module.exports = UserCreditModel;
+
+CreditModel.belongsTo(StoreModel, { foreignKey: 'store_id' });
+CreditModel.sync({ alter: true });
+module.exports = CreditModel;

@@ -3,12 +3,11 @@ const app = express();
 const PackageModel = require('../models/PackageModel');
 
 //Add new packages
-app.post('/api/package/add-packgae', async (req, res) => {
+app.post('/api/package/add-package', async (req, res) => {
     try {
-        const { packagePrice, packageName } = req.body;
-        console.log(req.body);
+        const { package_price, package_name } = req.body;
         switch (true) {
-            case packagePrice != 0 && !packagePrice || !packageName:
+            case package_price != 0 && !package_price || !package_name:
                 res.status(500).send({ msg: "กรุณาใส่ข้อมูลให้ครบถ้วนค่ะ!" });
                 return;
         }

@@ -5,6 +5,7 @@ import Scan from "./Scan";
 import dummyProducts from "./products";
 
 function Sale() {
+  document.title = "POSYAYEE 💸 ขายของหน้าร้าน"
   return (
     <div className=" w-full h-[100vh]">
       <div className="w-full absolute">

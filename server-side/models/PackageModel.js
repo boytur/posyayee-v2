@@ -1,18 +1,18 @@
 const connection = require('../connections/connect');
 const { DataTypes } = require('sequelize');
 
-const PackageModel = connection.define('Package', {
-    packageId: {
+const PackageModel = connection.define('tb_packages', {
+    package_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
     },
-    packagePrice: {
+    package_price: {
         type: DataTypes.DOUBLE,
         allowNull: false,
     },
-    packageName: {
+    package_name: {
         type: DataTypes.STRING(225),
         allowNull: false,
     }
